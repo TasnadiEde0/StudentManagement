@@ -18,7 +18,7 @@ public class Group extends BaseObject {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "group")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH, mappedBy = "group")
     @JsonManagedReference //break infinite recursion in json conversion
     private List<Student> students;
 }

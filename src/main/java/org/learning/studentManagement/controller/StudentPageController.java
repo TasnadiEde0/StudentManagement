@@ -57,57 +57,52 @@ public class StudentPageController {
         }
     }
 
-    private Group fetchGroup(Boolean groupCreation, String groupid, String groupName) throws GroupNameDuplicateException {
-        Group group = new Group();
+    private Group fetchGroup(String name) throws GroupNameDuplicateException {
+        Group group = groupService.findByName(name).orElse(null);
 
-        if (groupCreation != null && groupCreation && groupName != null && !groupName.isEmpty()) {
+        if  (group == null) {
+            group = new Group();
+            group.setName(name);
 
-            groupNameDuplicateCheck(groupName);
+            groupService.save(group);
 
-            group.setName(groupName);
-            group = groupService.save(group);
         }
-        else {
-            group = groupService.findById(Integer.parseInt(groupid)).orElse(null);
-        }
+
         return group;
 
     }
 
     @PostMapping("/utils/student/add")
     public RedirectView addStudent(
-            @RequestParam("firstName") String firstName,
-            @RequestParam("lastName") String lastName,
-            @RequestParam("email") String email,
-            @RequestParam("cnp") String cnp,
-            @RequestParam("groupid") String groupid,
-            @RequestParam(value = "groupCreation", required = false) Boolean groupCreation,
-            @RequestParam(value = "groupName", required = false) String groupName
+            @RequestParam(value = "firstName") String firstName,
+            @RequestParam(value = "lastName") String lastName,
+            @RequestParam(value = "email") String email,
+            @RequestParam(value = "cnp") String cnp,
+            @RequestParam(value = "groupName") String groupName
     ) throws StudentCnpDuplicateException {
         Student student = new Student();
         student.setFirstName(firstName);
         student.setLastName(lastName);
 
         emailDuplicateCheck(email);
-
         student.setEmail(email);
 
         cnpDuplicateCheck(cnp);
-
         student.setCnp(cnp);
 
-        Group group = fetchGroup(groupCreation, groupid, groupName);
+        studentService.save(student);
 
+        Group group = fetchGroup(groupName);
         student.setGroup(group);
 
-        studentService.save(student);
+        studentService.update(student);
 
         return new RedirectView("/student"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
     }
 
     @PostMapping("/utils/student/delete")
     public RedirectView deleteStudent(
-            @RequestParam("id") String id
+            @RequestParam(value = "id") String id
     ) {
         Student student = studentService.findById(Integer.parseInt(id)).orElse(null);
         studentService.delete(student);
@@ -117,19 +112,30 @@ public class StudentPageController {
 
     @PostMapping("/utils/student/alter")
     public RedirectView alterStudent(
-            @RequestParam("id") String id,
-            @RequestParam("firstName") String firstName,
-            @RequestParam("lastName") String lastName,
-            @RequestParam("email") String email,
-            @RequestParam("cnp") String cnp,
-            @RequestParam("groupid") String groupid
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "firstName", required = false, defaultValue = "") String firstName,
+            @RequestParam(value = "lastName", required = false, defaultValue = "") String lastName,
+            @RequestParam(value = "email", required = false, defaultValue = "") String email,
+            @RequestParam(value = "cnp", required = false, defaultValue = "") String cnp,
+            @RequestParam(value = "groupid", required = false, defaultValue = "") String groupid
     ) {
         Student student = studentService.findById(Integer.parseInt(id)).orElse(null);
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-        student.setEmail(email);
-        student.setCnp(cnp);
-        student.setGroup(groupService.findById(Integer.parseInt(groupid)).orElse(null));
+
+        if (!firstName.isEmpty()) {
+            student.setFirstName(firstName);
+        }
+        if (!lastName.isEmpty()) {
+            student.setLastName(lastName);
+        }
+        if (!email.isEmpty()) {
+            student.setEmail(email);
+        }
+        if (!cnp.isEmpty()) {
+            student.setCnp(cnp);
+        }
+        if (!groupid.isEmpty()) {
+            student.setGroup(groupService.findById(Integer.parseInt(groupid)).orElse(null));
+        }
 
         studentService.update(student);
 

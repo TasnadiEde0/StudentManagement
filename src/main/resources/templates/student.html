@@ -50,17 +50,7 @@
         <input type="text" name="cnp" id="cnp">
         <br>
 
-        <label for="groupid">Group</label>
-        <select name="groupid" id="groupid">
-            <option th:each="group : ${groups}" th:text="${group.name}" th:value="${group.id}"></option>
-        </select>
-        <br>
-
-        <label for="groupCreation">Create new Group</label>
-        <input type="checkbox" name="groupCreation" id="groupCreation">
-        <br>
-
-        <label for="groupName">New group name</label>
+        <label for="groupName">Group</label>
         <input type="text" name="groupName" id="groupName">
         <br>
 
@@ -103,8 +93,9 @@
         <input type="text" name="cnp" id="cnpAlter">
         <br>
 
-        <label for="groupidAlter">Group ID</label>
+        <label for="groupidAlter">Group</label>
         <select name="groupid" id="groupidAlter">
+            <option></option>
             <option th:each="group : ${groups}" th:text="${group.name}" th:value="${group.id}"></option>
         </select>
         <br>

@@ -42,7 +42,7 @@ public class GroupPageController {
 
     @PostMapping("/utils/group/add")
     public RedirectView addGroup(
-            @RequestParam("name") String name
+            @RequestParam(value = "name") String name
     ) {
         Group group = new Group();
 
@@ -56,7 +56,7 @@ public class GroupPageController {
 
     @PostMapping("/utils/group/delete")
     public RedirectView deleteGroup(
-            @RequestParam("id") String id
+            @RequestParam(value = "id") String id
     ) {
         Group group = groupService.findById(Integer.parseInt(id)).orElse(null);
         groupService.delete(group);
@@ -66,11 +66,15 @@ public class GroupPageController {
 
     @PostMapping("/utils/group/alter")
     public RedirectView alterGroup(
-            @RequestParam("id") String id,
-            @RequestParam("name") String name
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name
     ) {
         Group group = groupService.findById(Integer.parseInt(id)).orElse(null);
-        group.setName(name);
+
+        if (!name.isEmpty()) {
+            group.setName(name);
+        }
+
         groupService.update(group);
 
         return new RedirectView("/group"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
