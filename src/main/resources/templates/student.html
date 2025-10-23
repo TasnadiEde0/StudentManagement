@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Students</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a HREF="/group">Groups</a>
+
+    <h1>Students</h1>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>CNP</th>
+            <th>Group</th>
+        </tr>
+        <tbody>
+            <tr th:each="student : ${students}">
+                <td th:text="${student.id}"></td>
+                <td th:text="${student.firstName}"></td>
+                <td th:text="${student.lastName}"></td>
+                <td th:text="${student.email}"></td>
+                <td th:text="${student.cnp}"></td>
+                <td th:text="${student.group}!=null?${student.group.name}:''"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Add Student</h2>
+
+    <form action="/utils/student/add" method="post">
+
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" id="firstName">
+        <br>
+
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastName">
+        <br>
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email">
+        <br>
+
+        <label for="cnp">CNP</label>
+        <input type="text" name="cnp" id="cnp">
+        <br>
+
+        <label for="groupid">Group</label>
+        <select name="groupid" id="groupid">
+            <option th:each="group : ${groups}" th:text="${group.name}" th:value="${group.id}"></option>
+        </select>
+        <br>
+
+        <label for="groupCreation">Create new Group</label>
+        <input type="checkbox" name="groupCreation" id="groupCreation">
+        <br>
+
+        <label for="groupName">New group name</label>
+        <input type="text" name="groupName" id="groupName">
+        <br>
+
+        <input type="submit" value="Add Student">
+
+    </form>
+
+    <h2>Delete Student</h2>
+
+    <form action="/utils/student/delete" method="post">
+
+        <label for="id">ID </label>
+        <input type="text" name="id" id="id">
+        <br>
+
+        <input type="submit" value="Delete Student">
+    </form>
+
+    <h2>Alter Student</h2>
+
+    <form action="/utils/student/alter" method="post">
+
+        <label for="id">ID </label>
+        <input type="text" name="id" id="idAlter">
+        <br>
+
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" id="firstNameAlter">
+        <br>
+
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastNameAlter">
+        <br>
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="emailAlter">
+        <br>
+
+        <label for="cnp">CNP</label>
+        <input type="text" name="cnp" id="cnpAlter">
+        <br>
+
+        <label for="groupidAlter">Group ID</label>
+        <select name="groupid" id="groupidAlter">
+            <option th:each="group : ${groups}" th:text="${group.name}" th:value="${group.id}"></option>
+        </select>
+        <br>
+
+        <input type="submit" value="Alter Student">
+
+    </form>
+
+
+
+</body>
+</html>
