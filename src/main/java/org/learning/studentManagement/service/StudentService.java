@@ -1,5 +1,6 @@
 package org.learning.studentManagement.service;
 
+import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface StudentService {
     List<Student> findAll();
 
     Student save(Student student);
+
+    void createNewStudent(String firstName, String lastName, String email, String cnp, String groupName);
 
     void update(Student student);
 

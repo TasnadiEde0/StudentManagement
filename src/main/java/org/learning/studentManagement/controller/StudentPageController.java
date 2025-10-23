@@ -80,24 +80,10 @@ public class StudentPageController {
             @RequestParam(value = "cnp") String cnp,
             @RequestParam(value = "groupName") String groupName
     ) throws StudentCnpDuplicateException {
-        Student student = new Student();
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-
-        emailDuplicateCheck(email);
-        student.setEmail(email);
-
-        cnpDuplicateCheck(cnp);
-        student.setCnp(cnp);
-
-        studentService.save(student);
-
-        Group group = fetchGroup(groupName);
-        student.setGroup(group);
-
-        studentService.update(student);
+        studentService.createNewStudent(firstName, lastName, email, cnp, groupName);
 
         return new RedirectView("/student"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+
     }
 
     @PostMapping("/utils/student/delete")
