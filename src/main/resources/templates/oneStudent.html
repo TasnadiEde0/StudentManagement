@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Students</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a HREF="/student">Student</a>
+<br>
+
+<img th:src="@{/imgs/__${student.imgName}__}" height="300">
+
+<p th:utext="@{First Name: <b>__${student.firstName}__</b>}" ></p>
+
+<p th:utext="@{Last Name: <b>__${student.lastName}__</b>}" ></p>
+
+<p th:utext="@{CNP: <b>__${student.cnp}__</b>}" ></p>
+
+<p th:utext="@{Email: <b>__${student.email}__</b>}" ></p>
+
+<p th:utext="@{Group: <b>__${student.group.name}__</b>}" ></p>
+
+
+
+</body>
+</html>

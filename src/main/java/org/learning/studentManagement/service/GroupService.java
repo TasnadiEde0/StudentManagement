@@ -9,16 +9,16 @@ import java.util.Optional;
  * Processing for Group data
  */
 public interface GroupService {
-    Optional<Group> findById(int Id);
+    Group findById(int Id);
 
     Optional<Group> findByName(String name);
 
     List<Group> findAll();
 
-    Group save(Group group);
+    Group save(String name);
 
-    void update(Group group);
+    void update(String id, String name);
 
-    void delete(Group group);
+    void delete(String id);
 
 }

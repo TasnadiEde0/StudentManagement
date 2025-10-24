@@ -25,4 +25,5 @@ public interface StudentDaoJpa extends StudentDao, JpaRepository<Student,Integer
     @Override
     void update(@Param("student") Student student); // JpaRepository doesn't generate default update method
 
+
 }

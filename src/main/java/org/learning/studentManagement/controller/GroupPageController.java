@@ -44,24 +44,20 @@ public class GroupPageController {
     public RedirectView addGroup(
             @RequestParam(value = "name") String name
     ) {
-        Group group = new Group();
-
-        groupDuplicateCheck(name);
-
-        group.setName(name);
-        groupService.save(group);
+        groupService.save(name);
 
         return new RedirectView("/group"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+
     }
 
     @PostMapping("/utils/group/delete")
     public RedirectView deleteGroup(
             @RequestParam(value = "id") String id
     ) {
-        Group group = groupService.findById(Integer.parseInt(id)).orElse(null);
-        groupService.delete(group);
+        groupService.delete(id);
 
         return new RedirectView("/group"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+
     }
 
     @PostMapping("/utils/group/alter")
@@ -69,15 +65,10 @@ public class GroupPageController {
             @RequestParam(value = "id") String id,
             @RequestParam(value = "name", required = false, defaultValue = "") String name
     ) {
-        Group group = groupService.findById(Integer.parseInt(id)).orElse(null);
-
-        if (!name.isEmpty()) {
-            group.setName(name);
-        }
-
-        groupService.update(group);
+        groupService.update(id, name);
 
         return new RedirectView("/group"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+
     }
 
 }

@@ -2,7 +2,11 @@ package org.learning.studentManagement.service;
 
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +14,7 @@ import java.util.Optional;
  * Processing for Student data
  */
 public interface StudentService {
-    Optional<Student> findById(int Id);
+    Student findById(int Id);
 
     Optional<Student> findByCnp(String cnp);
 
@@ -18,12 +22,12 @@ public interface StudentService {
 
     List<Student> findAll();
 
-    Student save(Student student);
+    Student save(String firstName, String lastName, String email, String cnp, String groupName, MultipartFile file) throws IOException;
 
-    void createNewStudent(String firstName, String lastName, String email, String cnp, String groupName);
+    void update(String id,  String firstName, String lastName, String email, String cnp, String groupName, MultipartFile file) throws IOException;
 
-    void update(Student student);
+    void delete(String id);
 
-    void delete(Student student);
+    Resource serveImg(String imgName) throws MalformedURLException;
 
 }

@@ -26,6 +26,8 @@ public class Student extends BaseObject {
     @Email(message = "Email should be valid")
     private String email;
 
+    private String imgName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true)
     @JsonBackReference //break infinite recursion json conversion
