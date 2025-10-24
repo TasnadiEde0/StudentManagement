@@ -1,22 +1,29 @@
 package org.learning.studentManagement.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table(name = "tb_group")
-public class Group extends BaseObject {
+@Table(name = "tb_course")
+public class Course extends BaseObject {
     @Size(min = 4, max = 32)
     @Column(unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH, mappedBy = "group")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startDate;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate endDate;
+
+    @ManyToMany(mappedBy = "courses")
     private List<Student> students;
 }

@@ -30,4 +30,8 @@ public interface StudentService {
 
     Resource serveImg(String imgName) throws MalformedURLException;
 
+    void enterCourse(Integer studentId, Integer courseId);
+
+    void leaveCourse(Integer studentId, Integer courseId);
+
 }

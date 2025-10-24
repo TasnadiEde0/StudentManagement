@@ -106,7 +106,6 @@ public class StudentPageController {
             @RequestParam(value = "groupName") String groupName
     ) throws StudentCnpDuplicateException, IOException {
 
-
         studentService.save(firstName, lastName, email, cnp, groupName, file);
 
 
@@ -149,6 +148,27 @@ public class StudentPageController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + "\"")
                 .body(resource);
+    }
+
+    @PostMapping("/utils/student/enterCourse")
+    public RedirectView enterCourse(
+            @RequestParam(value = "studentId") String studentId,
+            @RequestParam(value = "courseId")  String courseId
+    ) {
+        studentService.enterCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
+
+        return new RedirectView("/student/" + studentId);
+
+    }
+
+    @PostMapping("/utils/student/leaveCourse")
+    public RedirectView leaveCourse(
+            @RequestParam(value = "studentId") String studentId,
+            @RequestParam(value = "courseId")  String courseId
+    ) {
+        studentService.leaveCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
+
+        return new RedirectView("/student/" + studentId);
     }
 
 }

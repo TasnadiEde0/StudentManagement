@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
@@ -30,7 +32,14 @@ public class Student extends BaseObject {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true)
-    @JsonBackReference //break infinite recursion json conversion
     private Group group;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST,  CascadeType.MERGE })
+    @JoinTable(
+        name = "tb_student_course",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private List<Course> courses;
 
 }

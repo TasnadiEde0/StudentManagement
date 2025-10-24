@@ -16,10 +16,10 @@ public interface StudentDaoJpa extends StudentDao, JpaRepository<Student,Integer
     @Query(value = """ 
             UPDATE Student s
             SET s.firstName = :#{#student.firstName},
-            s.lastName = :#{#student.lastName},
-            s.cnp = :#{#student.cnp},
-            s.email = :#{#student.email},
-            s.group.id = :#{#student.group.id}
+                s.lastName = :#{#student.lastName},
+                s.cnp = :#{#student.cnp},
+                s.email = :#{#student.email},
+                s.group.id = :#{#student.group.id}
             WHERE s.id = :#{#student.id}
             """)
     @Override

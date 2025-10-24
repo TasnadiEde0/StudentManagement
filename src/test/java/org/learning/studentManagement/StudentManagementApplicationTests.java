@@ -49,6 +49,11 @@ class TestingWebApplicationTest {
         mockMvc.perform(get("/group")).andExpect(status().isOk()).andExpect(view().name("group"));
     }
 
+    @Test
+    void indexMtM() throws Exception {
+        mockMvc.perform(get("/"));
+    }
+
 //    @Test
 //    void addGroup() throws Exception {
 //        mockMvc.perform(post("/utils/group/add")

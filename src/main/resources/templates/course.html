@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<a HREF="/student">Students</a>
+<br>
+<a HREF="/group">Groups</a>
+
+<h1>Courses</h1>
+
+<div th:each="course : ${courses}">
+
+    <h2 th:text="${course.name}"></h2>
+    <p th:text="@{Course ID: __${course.id}__}"></p>
+    <p th:text="@{Starting Date: __${course.startDate}__}"></p>
+    <p th:text="@{Ending Date: __${course.endDate}__}"></p>
+
+    <table>
+        <tr>
+            <th>Student ID</th>
+            <th>Student First Name</th>
+            <th>Student Last Name</th>
+            <th></th>
+        </tr>
+        <tr th:each="student : ${course.students}">
+            <td th:text="${student.id}"></td>
+            <td th:text="${student.firstName}"></td>
+            <td th:text="${student.lastName}"></td>
+            <td>
+                <form th:action="@{/utils/course/removeStudent?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
+                    <input type="submit" value="Remove">
+                </form>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<h2>Add Course</h2>
+
+<form action="/utils/course/add" method="post">
+
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name">
+    <br>
+
+    <label for="startDate">Staring Date</label>
+    <input type="date" name="startDate" id="startDate">
+    <br>
+
+    <label for="endDate">Ending Date</label>
+    <input type="date" name="endDate" id="endDate">
+    <br>
+
+    <input type="submit" value="Add Course">
+
+</form>
+
+<h2>Delete Course</h2>
+
+<form action="/utils/course/delete" method="post">
+
+    <label for="id">ID</label>
+    <input type="text" name="id" id="id">
+    <br>
+
+    <input type="submit" value="Delete Course">
+
+</form>
+
+<h2>Alter Delete Course</h2>
+
+<form action="/utils/course/alter" method="post">
+
+    <label for="id">ID</label>
+    <input type="text" name="id" id="idAlter">
+    <br>
+
+    <label for="name">Name</label>
+    <input type="text" name="name" id="nameAlter">
+    <br>
+
+    <label for="startDate">Staring Date</label>
+    <input type="date" name="startDate" id="startDateAlter">
+    <br>
+
+    <label for="endDate">Ending Date</label>
+    <input type="date" name="endDate" id="endDateAlter">
+    <br>
+
+    <input type="submit" value="Alter Course">
+
+</form>
+
+<h2>Add Student to Course</h2>
+
+<form action="/utils/course/addStudent" method="post">
+
+    <label for="studentId">Student ID</label>
+    <input type="text" name="studentId" id="studentId">
+    <br>
+
+    <label for="courseId">Course ID</label>
+    <input type="text" name="courseId" id="courseId">
+    <br>
+
+    <input type="submit" value="Add">
+</form>
+
+<h2>Remove Student from Course</h2>
+
+<form action="/utils/course/removeStudent" method="post">
+
+    <label for="studentId">Student ID</label>
+    <input type="text" name="studentId" id="studentIdRm">
+    <br>
+
+    <label for="courseId">Course ID</label>
+    <input type="text" name="courseId" id="courseIdRm">
+    <br>
+
+    <input type="submit" value="Remove">
+</form>
+
+</body>
+</html>

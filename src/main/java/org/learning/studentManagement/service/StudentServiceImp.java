@@ -1,12 +1,15 @@
 package org.learning.studentManagement.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.learning.studentManagement.dataaccess.CourseDao;
 import org.learning.studentManagement.dataaccess.GroupDao;
 import org.learning.studentManagement.dataaccess.StudentDao;
 import org.learning.studentManagement.exception.GroupNameDuplicateException;
 import org.learning.studentManagement.exception.StudentCnpDuplicateException;
 import org.learning.studentManagement.exception.StudentEmailDuplicateException;
+import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,13 @@ public class StudentServiceImp implements StudentService {
 
     @Autowired
     private GroupDao groupDao;
+
+    @Autowired
+    private CourseDao courseDao;
+
+    @Autowired
+    private EntityManager entityManager;
+
 
     String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads/imgs";
 
@@ -124,6 +134,19 @@ public class StudentServiceImp implements StudentService {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param cnp
+     * @param groupid
+     * @param file
+     * @throws IOException
+     *
+     * DOES NOT UPDATE COURSE LIST
+     */
     @Override
     @Transactional
     public void update(String id,  String firstName, String lastName, String email, String cnp, String groupid, MultipartFile file) throws IOException {
@@ -181,6 +204,44 @@ public class StudentServiceImp implements StudentService {
         Resource resource = new UrlResource(path.toUri());
 
         return  resource;
+    }
+
+    @Override
+    @Transactional
+    public void enterCourse(Integer studentId, Integer courseId) {
+        Course course = courseDao.findById(courseId).orElseThrow(() -> new IllegalArgumentException("The given ID isn't associated with a course!"));
+        Student student = findById(studentId);
+
+        if (!course.getStudents().contains(student) || !student.getCourses().contains(course)) {
+            course.getStudents().add(student);
+            student.getCourses().add(course);
+
+            entityManager.persist(course);
+            entityManager.persist(student);
+
+        }
+        else {
+            throw new IllegalArgumentException("The student is already in this course!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void leaveCourse(Integer studentId, Integer courseId) {
+        Course course = courseDao.findById(courseId).orElseThrow(() -> new IllegalArgumentException("The given ID isn't associated with a course!"));
+        Student student = findById(studentId);
+
+        if (course.getStudents().contains(student) && student.getCourses().contains(course)) {
+            course.getStudents().remove(student);
+            student.getCourses().remove(course);
+
+            entityManager.persist(course);
+            entityManager.persist(student);
+
+        }
+        else {
+            throw new IllegalArgumentException("The student is already in this course!");
+        }
     }
 
 }
