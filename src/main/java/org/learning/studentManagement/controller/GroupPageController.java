@@ -2,7 +2,6 @@ package org.learning.studentManagement.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.learning.studentManagement.exception.GroupNameDuplicateException;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -31,13 +29,6 @@ public class GroupPageController {
         List<Group> groups = groupService.findAll();
         model.addAttribute("groups", groups);
         return "group";
-    }
-
-    private void groupDuplicateCheck(String name) throws GroupNameDuplicateException {
-        Optional<Group> testGroup = groupService.findByName(name);
-        if (testGroup.isPresent()) {
-            throw new GroupNameDuplicateException();
-        }
     }
 
     @PostMapping("/utils/group/add")

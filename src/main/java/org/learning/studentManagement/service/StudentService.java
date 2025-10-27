@@ -5,6 +5,7 @@ import org.learning.studentManagement.model.Student;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -28,7 +29,7 @@ public interface StudentService {
 
     void delete(String id);
 
-    Resource serveImg(String imgName) throws MalformedURLException;
+    Resource serveImg(String imgName) throws MalformedURLException, FileNotFoundException;
 
     void enterCourse(Integer studentId, Integer courseId);
 

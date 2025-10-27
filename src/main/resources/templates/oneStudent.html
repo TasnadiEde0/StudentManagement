@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Students</title>
+    <title>Student</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
         <th>Course Name</th>
         <th>Starting Date</th>
         <th>Ending Date</th>
-        <th>THE PLACE WHERE YOU LEAVE A COURSE</th>
+        <th></th>
     </tr>
 
     <tr th:each="course : ${student.courses}">
@@ -36,6 +36,11 @@
         <td th:text="${course.name}"></td>
         <td th:text="${course.startDate}"></td>
         <td th:text="${course.endDate}"></td>
+        <td>
+            <form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
+                <input type="submit" value="Leave">
+            </form>
+        </td>
     </tr>
 
 </table>
@@ -45,10 +50,6 @@
 
 <form th:action="@{/utils/student/enterCourse?studentId=__${student.id}__}" method="post">
 
-<!--    <label for="studentId">Student ID</label>-->
-<!--    <input type="text" name="studentId" id="studentId">-->
-<!--    <br>-->
-
     <label for="courseId">Course ID</label>
     <input type="text" name="courseId" id="courseId">
     <br>
@@ -56,20 +57,16 @@
     <input type="submit" value="Enter">
 </form>
 
-<h2>Leave Course</h2>
+<!--<h2>Leave Course</h2>-->
 
-<form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__}" method="post">
+<!--<form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__}" method="post">-->
 
-<!--    <label for="studentId">Student ID</label>-->
-<!--    <input type="text" name="studentId" id="studentIdRm">-->
+<!--    <label for="courseId">Course ID</label>-->
+<!--    <input type="text" name="courseId" id="courseIdRm">-->
 <!--    <br>-->
 
-    <label for="courseId">Course ID</label>
-    <input type="text" name="courseId" id="courseIdRm">
-    <br>
-
-    <input type="submit" value="Leave">
-</form>
+<!--    <input type="submit" value="Leave">-->
+<!--</form>-->
 
 </body>
 </html>

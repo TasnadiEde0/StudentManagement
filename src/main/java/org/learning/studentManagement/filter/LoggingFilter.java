@@ -6,13 +6,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Slf4j
-@Component
+//@Component
 public class LoggingFilter implements Filter {
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     public void doFilter(
             ServletRequest request,
@@ -24,7 +28,7 @@ public class LoggingFilter implements Filter {
         chain.doFilter(request, response);
 
         log.info("{} {} {}", req.getMethod(), req.getRequestURI(), resp.getStatus());
-        log.info(new ObjectMapper().writeValueAsString(req.getParameterMap()));
+        log.info(objectMapper.writeValueAsString(req.getParameterMap()));
 
     }
 }

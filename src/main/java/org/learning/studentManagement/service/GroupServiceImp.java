@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.dataaccess.GroupDao;
 import org.learning.studentManagement.model.Group;
-import org.learning.studentManagement.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,12 +39,19 @@ public class GroupServiceImp implements GroupService{
         return groupDao.findAll();
     }
 
+    private void groupDuplicateCheck(String name) {
+        Optional<Group> testGroup = groupDao.findByName(name);
+        if (testGroup.isPresent()) {
+            throw new IllegalArgumentException("Group name already taken!");
+        }
+    }
+
     @Override
     @Transactional
     public Group save(String name) {
         Group group = new Group();
 
-//        groupDuplicateCheck(name);
+        groupDuplicateCheck(name);
 
         group.setName(name);
         return groupDao.save(group);
@@ -55,11 +61,7 @@ public class GroupServiceImp implements GroupService{
     @Override
     @Transactional
     public void update(String id, String name) {
-        Group group = groupDao.findById(Integer.parseInt(id)).orElse(null);
-
-        if (group == null) {
-            throw new IllegalArgumentException("The given ID isn't associated with a group!");
-        }
+        Group group = findById(Integer.parseInt(id));
 
         if (!name.isEmpty()) {
             group.setName(name);
@@ -71,7 +73,7 @@ public class GroupServiceImp implements GroupService{
     @Override
     @Transactional
     public void delete(String id) {
-        Group group = groupDao.findById(Integer.parseInt(id)).orElse(null);
+        Group group = findById(Integer.parseInt(id));
 
         groupDao.delete(group);
     }

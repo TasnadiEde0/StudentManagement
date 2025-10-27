@@ -69,8 +69,7 @@ public class CourseServiceImp implements CourseService {
      */
     @Override
     public void update(Integer id, String name, LocalDate startDate, LocalDate endDate) {
-        Course course = courseDao.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("The given ID isn't associated with a course!"));
+        Course course = findById(id);
 
         if (!name.isEmpty()) {
             course.setName(name);

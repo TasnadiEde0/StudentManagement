@@ -1,7 +1,6 @@
 package org.learning.studentManagement.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.learning.studentManagement.exception.StudentCnpDuplicateException;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.learning.studentManagement.service.GroupService;
@@ -20,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -52,7 +51,6 @@ public class StudentPageController {
 
         if(pageCount < pageNum) {
             pageNum = pageCount;
-//            throw new IllegalArgumentException("Invalid page number " + pageNum);
         }
 
         list = list.subList((pageNum - 1) * 10, Math.min(pageNum * 10, list.size()));
@@ -104,10 +102,9 @@ public class StudentPageController {
             @RequestParam(value = "email") String email,
             @RequestParam(value = "cnp") String cnp,
             @RequestParam(value = "groupName") String groupName
-    ) throws StudentCnpDuplicateException, IOException {
+    ) throws IOException {
 
         studentService.save(firstName, lastName, email, cnp, groupName, file);
-
 
         return new RedirectView("/student"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
@@ -142,7 +139,7 @@ public class StudentPageController {
     }
 
     @GetMapping("/imgs/{imgName}")
-    public ResponseEntity<Resource> imgServing(@PathVariable String imgName) throws MalformedURLException {
+    public ResponseEntity<Resource> imgServing(@PathVariable String imgName) throws MalformedURLException, FileNotFoundException {
         Resource resource = studentService.serveImg(imgName);
 
         return ResponseEntity.ok()

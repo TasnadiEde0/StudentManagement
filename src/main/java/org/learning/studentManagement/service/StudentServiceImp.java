@@ -6,9 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.dataaccess.CourseDao;
 import org.learning.studentManagement.dataaccess.GroupDao;
 import org.learning.studentManagement.dataaccess.StudentDao;
-import org.learning.studentManagement.exception.GroupNameDuplicateException;
-import org.learning.studentManagement.exception.StudentCnpDuplicateException;
-import org.learning.studentManagement.exception.StudentEmailDuplicateException;
 import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
@@ -18,6 +15,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -25,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -44,29 +43,28 @@ public class StudentServiceImp implements StudentService {
 
     String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads/imgs";
 
-    private void emailDuplicateCheck(String email) throws StudentEmailDuplicateException {
+    private void emailDuplicateCheck(String email) {
         Optional<Student> testEmail = studentDao.findByEmail(email);
         if (testEmail.isPresent()) {
-            throw new StudentEmailDuplicateException();
+            throw new IllegalArgumentException("Student Email already taken!");
         }
     }
-    private void cnpDuplicateCheck(String cnp) throws GroupNameDuplicateException {
+    private void cnpDuplicateCheck(String cnp) {
         Optional<Student> testCnp = studentDao.findByCnp(cnp);
         if (testCnp.isPresent()) {
-            throw new StudentCnpDuplicateException();
+            throw new IllegalArgumentException("Student CNP already taken!");
         }
     }
 
-    private Group fetchGroup(String name) throws GroupNameDuplicateException {
+    private Group fetchGroup(String name) {
         Group group = groupDao.findByName(name).orElse(null);
 
         if  (group == null) {
             group = new Group();
             group.setName(name);
-
-            group = groupDao.save(group);
-
         }
+
+        group = groupDao.save(group);
 
         return group;
 
@@ -108,9 +106,9 @@ public class StudentServiceImp implements StudentService {
             throw new IllegalArgumentException("No picture has been uploaded!");
         }
 
-        Path imgPath = Paths.get(UPLOAD_DIRECTORY, cnp + "_" + firstName + "_" + lastName + ".png");
+        Path imgPath = Paths.get(UPLOAD_DIRECTORY, cnp + ".png");
         Files.write(imgPath, file.getBytes());
-        student.setImgName(cnp + "_" + firstName + "_" + lastName + ".png");
+        student.setImgName(cnp + ".png");
 
         student.setFirstName(firstName);
         student.setLastName(lastName);
@@ -150,11 +148,7 @@ public class StudentServiceImp implements StudentService {
     @Override
     @Transactional
     public void update(String id,  String firstName, String lastName, String email, String cnp, String groupid, MultipartFile file) throws IOException {
-        Student student = studentDao.findById(Integer.parseInt(id)).orElse(null);
-
-        if  (student == null) {
-            throw new IllegalArgumentException("The given ID isn't associated with a student!");
-        }
+        Student student = findById(Integer.parseInt(id));
 
         if (!firstName.isEmpty()) {
             student.setFirstName(firstName);
@@ -173,11 +167,10 @@ public class StudentServiceImp implements StudentService {
         }
 
         if (!file.isEmpty()) {
-            Path imgPath = Paths.get(UPLOAD_DIRECTORY, student.getCnp() + "_" +
-                    student.getFirstName() + "_" + student.getLastName() + ".png");
+            Path imgPath = Paths.get(UPLOAD_DIRECTORY, student.getCnp() + "_" + ".png");
             Files.write(imgPath, file.getBytes());
             student.setImgName(student.getCnp() + "_" +
-                    student.getFirstName() + "_" + student.getLastName() + ".png");
+                    student.getFirstName() + ".png");
         }
 
         studentDao.update(student);
@@ -187,23 +180,21 @@ public class StudentServiceImp implements StudentService {
     @Override
     @Transactional
     public void delete(String id) {
-        Student student = studentDao.findById(Integer.parseInt(id)).orElse(null);
-
-        if  (student == null) {
-            throw new IllegalArgumentException("The given ID isn't associated with any student!");
-        }
+        Student student = findById(Integer.parseInt(id));
 
         studentDao.delete(student);
 
     }
 
     @Override
-    public Resource serveImg(String imgName) throws MalformedURLException {
+    public Resource serveImg(String imgName) throws MalformedURLException, FileNotFoundException {
         Path path = Paths.get(UPLOAD_DIRECTORY).resolve(imgName);
 
-        Resource resource = new UrlResource(path.toUri());
+        if(Files.notExists(path)) {
+            throw new FileNotFoundException(imgName);
+        }
 
-        return  resource;
+        return new UrlResource(path.toUri());
     }
 
     @Override

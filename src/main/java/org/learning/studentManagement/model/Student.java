@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,17 +16,20 @@ import java.util.List;
 @Entity
 @Table(name = "tb_student")
 public class Student extends BaseObject {
-    @Size(min = 1, max = 16, message = "Invalid first name")
+    @Size(min = 1, max = 16, message = "First name should be between 1 and 16 characters")
+    @Pattern(regexp = "^[a-zA-Z 1-9]*$", message = "First name contains invalid characters")
     private String firstName;
 
-    @Size(min = 1, max = 16, message = "Invalid last name")
+    @Size(min = 1, max = 16, message = "Last name should be between 1 and 16 characters")
+    @Pattern(regexp = "^[a-zA-Z 1-9]*$", message = "Last name contains invalid characters")
     private String lastName;
 
-    @Size(min = 13, max = 13, message = "Invalid CNP")
+    @Size(min = 13, max = 13, message = "CNP should be 13 characters long")
+    @Pattern(regexp = "^[0-9]*$", message = "CNP contains invalid characters")
     @Column(nullable = false, unique = true)
     private String cnp;
 
-    @Email(message = "Email should be valid")
+    @Email(message = "Invalid email")
     private String email;
 
     private String imgName;
