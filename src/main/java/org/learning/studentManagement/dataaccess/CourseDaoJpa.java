@@ -19,6 +19,5 @@ public interface CourseDaoJpa extends CourseDao, JpaRepository<Course, Integer> 
             """)
     @Override
     void update(@Param("course") Course course); // JpaRepository doesn't generate default update method
-    
-    
+
 }

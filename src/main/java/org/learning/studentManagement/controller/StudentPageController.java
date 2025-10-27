@@ -47,9 +47,9 @@ public class StudentPageController {
                     student.getGroup().getId() == Integer.parseInt(selectedGroupId)).toList();
         }
 
-        int pageCount = (int) Math.ceil( list.size() / 10.0);
+        int pageCount = (int) Math.ceil(list.size() / 10.0);
 
-        if(pageCount < pageNum) {
+        if (pageCount < pageNum) {
             pageNum = pageCount;
         }
 
@@ -61,9 +61,9 @@ public class StudentPageController {
 
     @GetMapping("/student")
     public String student(
-            @RequestParam(value = "sortBy",  required = false, defaultValue = "id") String sortBy,
-            @RequestParam(value = "pageNum", required = false, defaultValue="1") String pageNum,
-            @RequestParam(value = "selectedGroup", required = false, defaultValue="") String selectedGroupId,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
+            @RequestParam(value = "selectedGroup", required = false, defaultValue = "") String selectedGroupId,
             Model model
     ) {
         List<Student> students = studentService.findAll();
@@ -132,7 +132,7 @@ public class StudentPageController {
             @RequestParam(value = "groupid", required = false, defaultValue = "") String groupid
     ) throws IOException {
 
-        studentService.update(id, firstName, lastName, email, cnp, groupid , file);
+        studentService.update(id, firstName, lastName, email, cnp, groupid, file);
 
         return new RedirectView("/student"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
@@ -150,7 +150,7 @@ public class StudentPageController {
     @PostMapping("/utils/student/enterCourse")
     public RedirectView enterCourse(
             @RequestParam(value = "studentId") String studentId,
-            @RequestParam(value = "courseId")  String courseId
+            @RequestParam(value = "courseId") String courseId
     ) {
         studentService.enterCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
@@ -161,7 +161,7 @@ public class StudentPageController {
     @PostMapping("/utils/student/leaveCourse")
     public RedirectView leaveCourse(
             @RequestParam(value = "studentId") String studentId,
-            @RequestParam(value = "courseId")  String courseId
+            @RequestParam(value = "courseId") String courseId
     ) {
         studentService.leaveCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
 

@@ -34,9 +34,9 @@ public class CoursePageController {
     @PostMapping("/utils/course/add")
     public RedirectView addCourse(
             @RequestParam("name") String name,
-            @RequestParam("startDate")LocalDate startDate,
-            @RequestParam("endDate")LocalDate endDate
-            ) {
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("endDate") LocalDate endDate
+    ) {
 
         courseService.save(name, startDate, endDate);
 
@@ -71,7 +71,7 @@ public class CoursePageController {
     @PostMapping("/utils/course/removeStudent")
     public RedirectView removeStudent(
             @RequestParam(value = "studentId") String studentId,
-            @RequestParam(value = "courseId")  String courseId
+            @RequestParam(value = "courseId") String courseId
     ) {
         courseService.removeStudent(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
@@ -81,7 +81,7 @@ public class CoursePageController {
     @PostMapping("/utils/course/addStudent")
     public RedirectView addStudent(
             @RequestParam(value = "studentId") String studentId,
-            @RequestParam(value = "courseId")  String courseId
+            @RequestParam(value = "courseId") String courseId
     ) {
         courseService.addStudent(Integer.parseInt(studentId), Integer.parseInt(courseId));
 

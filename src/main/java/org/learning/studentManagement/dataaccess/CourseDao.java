@@ -5,10 +5,6 @@ import org.learning.studentManagement.model.Course;
 import java.util.List;
 import java.util.Optional;
 
-
-
-
-
 public interface CourseDao {
     Optional<Course> findById(int Id);
 

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class GroupServiceImp implements GroupService{
+public class GroupServiceImp implements GroupService {
 
     @Autowired
     private GroupDao groupDao;

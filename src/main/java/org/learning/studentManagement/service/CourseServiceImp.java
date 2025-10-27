@@ -111,8 +111,7 @@ public class CourseServiceImp implements CourseService {
             entityManager.persist(course);
             entityManager.persist(student);
 
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("The given student is part of the course!");
         }
 
@@ -131,8 +130,7 @@ public class CourseServiceImp implements CourseService {
 
             entityManager.persist(course);
 
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("The given student isn't part of the course!");
         }
 

@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface StudentDaoJpa extends StudentDao, JpaRepository<Student,Integer> {
+public interface StudentDaoJpa extends StudentDao, JpaRepository<Student, Integer> {
 
     @Modifying
     @Transactional

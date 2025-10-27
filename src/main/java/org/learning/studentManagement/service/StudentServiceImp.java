@@ -49,6 +49,7 @@ public class StudentServiceImp implements StudentService {
             throw new IllegalArgumentException("Student Email already taken!");
         }
     }
+
     private void cnpDuplicateCheck(String cnp) {
         Optional<Student> testCnp = studentDao.findByCnp(cnp);
         if (testCnp.isPresent()) {
@@ -59,7 +60,7 @@ public class StudentServiceImp implements StudentService {
     private Group fetchGroup(String name) {
         Group group = groupDao.findByName(name).orElse(null);
 
-        if  (group == null) {
+        if (group == null) {
             group = new Group();
             group.setName(name);
         }
@@ -141,13 +142,11 @@ public class StudentServiceImp implements StudentService {
      * @param cnp
      * @param groupid
      * @param file
-     * @throws IOException
-     *
-     * DOES NOT UPDATE COURSE LIST
+     * @throws IOException DOES NOT UPDATE COURSE LIST
      */
     @Override
     @Transactional
-    public void update(String id,  String firstName, String lastName, String email, String cnp, String groupid, MultipartFile file) throws IOException {
+    public void update(String id, String firstName, String lastName, String email, String cnp, String groupid, MultipartFile file) throws IOException {
         Student student = findById(Integer.parseInt(id));
 
         if (!firstName.isEmpty()) {
@@ -190,7 +189,7 @@ public class StudentServiceImp implements StudentService {
     public Resource serveImg(String imgName) throws MalformedURLException, FileNotFoundException {
         Path path = Paths.get(UPLOAD_DIRECTORY).resolve(imgName);
 
-        if(Files.notExists(path)) {
+        if (Files.notExists(path)) {
             throw new FileNotFoundException(imgName);
         }
 
@@ -210,8 +209,7 @@ public class StudentServiceImp implements StudentService {
             entityManager.persist(course);
             entityManager.persist(student);
 
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("The student is already in this course!");
         }
     }
@@ -229,8 +227,7 @@ public class StudentServiceImp implements StudentService {
             entityManager.persist(course);
             entityManager.persist(student);
 
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("The student is already in this course!");
         }
     }

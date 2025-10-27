@@ -38,11 +38,11 @@ public class Student extends BaseObject {
     @JoinColumn(name = "group_id", nullable = true)
     private Group group;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST,  CascadeType.MERGE })
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-        name = "tb_student_course",
-        joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "course_id")
+            name = "tb_student_course",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private List<Course> courses;
 

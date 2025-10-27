@@ -21,8 +21,8 @@ public interface CourseService {
 
     void delete(Integer id);
 
-    void removeStudent(Integer studentId,  Integer courseId);
+    void removeStudent(Integer studentId, Integer courseId);
 
-    void addStudent(Integer studentId,  Integer courseId);
+    void addStudent(Integer studentId, Integer courseId);
 
 }
