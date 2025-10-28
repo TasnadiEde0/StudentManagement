@@ -17,6 +17,10 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ExceptionHandlerController {
 
+    /**
+     * Handles incorrect IDs, duplicate names
+     * Catches IllegalArgumentExceptions
+     */
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgumentException(Model model, IllegalArgumentException ex) {
@@ -25,12 +29,10 @@ public class ExceptionHandlerController {
         return "error";
     }
 
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Image file not found")
-    @ExceptionHandler(FileNotFoundException.class)
-    public void handleFileNotFound(FileNotFoundException ex) {
-
-    }
-
+    /**
+     * Handles violating input constraints
+     * Catches ConstraintViolationException
+     */
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public String handleConstraintViolationException(Model model, ConstraintViolationException ex) {
@@ -41,14 +43,14 @@ public class ExceptionHandlerController {
         return "error";
     }
 
-//    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler(Exception.class)
-//    public String handleException(Model model, Exception ex) {
-//        model.addAttribute("errorMsg", ex.getMessage());
-//
-//        log.error(ex.getMessage(), ex);
-//
-//        return "error";
-//    }
+    /**
+     * Handles Student profile picture not found
+     * Catches FileNotFoundException
+     */
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Image file not found")
+    @ExceptionHandler(FileNotFoundException.class)
+    public void handleFileNotFound(FileNotFoundException ex) {
+
+    }
 
 }

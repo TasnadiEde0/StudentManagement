@@ -35,11 +35,18 @@ public class StudentPageController {
     @Autowired
     private GroupService groupService;
 
-    private Pair<List<Student>, Integer> formatList(List<Student> list, String sortBy, Integer pageNum, String selectedGroupId) {
+    /**
+     * @param list            Unformatted list
+     * @param sortBy          Field by which to reorder list
+     * @param pageNum         Selected page
+     * @param selectedGroupId Group by which to filter ({@code null} if none)
+     * @return Formated list
+     */
+    private List<Student> formatList(List<Student> list, String sortBy, Integer pageNum, String selectedGroupId) {
         switch (sortBy) {
-            case "firstName" -> Collections.sort(list, Comparator.comparing(Student::getFirstName));
-            case "lastName" -> Collections.sort(list, Comparator.comparing(Student::getLastName));
-            case "email" -> Collections.sort(list, Comparator.comparing(Student::getEmail));
+            case "firstName" -> list.sort(Comparator.comparing(Student::getFirstName));
+            case "lastName" -> list.sort(Comparator.comparing(Student::getLastName));
+            case "email" -> list.sort(Comparator.comparing(Student::getEmail));
         }
 
         if (selectedGroupId != null && !selectedGroupId.isEmpty()) {
@@ -55,7 +62,7 @@ public class StudentPageController {
 
         list = list.subList((pageNum - 1) * 10, Math.min(pageNum * 10, list.size()));
 
-        return Pair.of(list, pageCount);
+        return list;
 
     }
 
@@ -70,9 +77,8 @@ public class StudentPageController {
         List<Group> groups = groupService.findAll();
 
         int totalStudentCount = students.size();
-        Pair<List<Student>, Integer> studentsAndCount = formatList(students, sortBy, Integer.valueOf(pageNum), selectedGroupId);
-        students = studentsAndCount.getFirst();
-        int pageCount = studentsAndCount.getSecond();
+        int pageCount = (int) Math.ceil(students.size() / 10.0);
+        students = formatList(students, sortBy, Integer.valueOf(pageNum), selectedGroupId);
 
         model.addAttribute("students", students);
         model.addAttribute("groups", groups);
@@ -138,6 +144,8 @@ public class StudentPageController {
 
     }
 
+
+    //Dynamically serve the student profile pictures
     @GetMapping("/imgs/{imgName}")
     public ResponseEntity<Resource> imgServing(@PathVariable String imgName) throws MalformedURLException, FileNotFoundException {
         Resource resource = studentService.serveImg(imgName);
@@ -154,7 +162,7 @@ public class StudentPageController {
     ) {
         studentService.enterCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/student/" + studentId);
+        return new RedirectView("/student/" + studentId); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
     }
 
@@ -165,7 +173,7 @@ public class StudentPageController {
     ) {
         studentService.leaveCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/student/" + studentId);
+        return new RedirectView("/student/" + studentId); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
     }
 
 }

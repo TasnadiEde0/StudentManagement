@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Slf4j
-//@Component
+@Component
 public class LoggingFilter implements Filter {
     @Autowired
     private ObjectMapper objectMapper;
@@ -27,6 +27,7 @@ public class LoggingFilter implements Filter {
 
         chain.doFilter(request, response);
 
+        // prints out method, URL, status code and parameters for each request
         log.info("{} {} {}", req.getMethod(), req.getRequestURI(), resp.getStatus());
         log.info(objectMapper.writeValueAsString(req.getParameterMap()));
 

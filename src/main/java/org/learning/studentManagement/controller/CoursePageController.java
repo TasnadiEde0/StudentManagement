@@ -40,7 +40,7 @@ public class CoursePageController {
 
         courseService.save(name, startDate, endDate);
 
-        return new RedirectView("/course");
+        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
     }
 
@@ -51,7 +51,7 @@ public class CoursePageController {
 
         courseService.delete(Integer.parseInt(id));
 
-        return new RedirectView("/course");
+        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
     }
 
@@ -64,7 +64,7 @@ public class CoursePageController {
     ) {
         courseService.update(Integer.valueOf(id), name, startDate, endDate);
 
-        return new RedirectView("/course");
+        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
     }
 
@@ -75,7 +75,7 @@ public class CoursePageController {
     ) {
         courseService.removeStudent(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/course");
+        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
     }
 
     @PostMapping("/utils/course/addStudent")
@@ -85,8 +85,7 @@ public class CoursePageController {
     ) {
         courseService.addStudent(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/course");
+        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
     }
-
 
 }
