@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+<form action="/logout" method="post"><input type="submit" value="Logout"></form>
+
 <a HREF="/student">Students</a>
 <br>
 <a HREF="/group">Groups</a>
@@ -39,91 +41,95 @@
 
 </div>
 
-<h2>Add Course</h2>
+<div th:if="${admin}">
 
-<form action="/utils/course/add" method="post">
+    <h2>Add Course</h2>
 
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name">
-    <br>
+    <form action="/utils/course/add" method="post">
 
-    <label for="startDate">Staring Date</label>
-    <input type="date" name="startDate" id="startDate">
-    <br>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+        <br>
 
-    <label for="endDate">Ending Date</label>
-    <input type="date" name="endDate" id="endDate">
-    <br>
+        <label for="startDate">Staring Date</label>
+        <input type="date" name="startDate" id="startDate">
+        <br>
 
-    <input type="submit" value="Add Course">
+        <label for="endDate">Ending Date</label>
+        <input type="date" name="endDate" id="endDate">
+        <br>
 
-</form>
+        <input type="submit" value="Add Course">
 
-<h2>Delete Course</h2>
+    </form>
 
-<form action="/utils/course/delete" method="post">
+    <h2>Delete Course</h2>
 
-    <label for="id">ID</label>
-    <input type="text" name="id" id="id">
-    <br>
+    <form action="/utils/course/delete" method="post">
 
-    <input type="submit" value="Delete Course">
+        <label for="id">ID</label>
+        <input type="text" name="id" id="id">
+        <br>
 
-</form>
+        <input type="submit" value="Delete Course">
 
-<h2>Alter Delete Course</h2>
+    </form>
 
-<form action="/utils/course/alter" method="post">
+    <h2>Alter Delete Course</h2>
 
-    <label for="id">ID</label>
-    <input type="text" name="id" id="idAlter">
-    <br>
+    <form action="/utils/course/alter" method="post">
 
-    <label for="name">Name</label>
-    <input type="text" name="name" id="nameAlter">
-    <br>
+        <label for="id">ID</label>
+        <input type="text" name="id" id="idAlter">
+        <br>
 
-    <label for="startDate">Staring Date</label>
-    <input type="date" name="startDate" id="startDateAlter">
-    <br>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="nameAlter">
+        <br>
 
-    <label for="endDate">Ending Date</label>
-    <input type="date" name="endDate" id="endDateAlter">
-    <br>
+        <label for="startDate">Staring Date</label>
+        <input type="date" name="startDate" id="startDateAlter">
+        <br>
 
-    <input type="submit" value="Alter Course">
+        <label for="endDate">Ending Date</label>
+        <input type="date" name="endDate" id="endDateAlter">
+        <br>
 
-</form>
+        <input type="submit" value="Alter Course">
 
-<h2>Add Student to Course</h2>
+    </form>
 
-<form action="/utils/course/addStudent" method="post">
+    <h2>Add Student to Course</h2>
 
-    <label for="studentId">Student ID</label>
-    <input type="text" name="studentId" id="studentId">
-    <br>
+    <form action="/utils/course/addStudent" method="post">
 
-    <label for="courseId">Course ID</label>
-    <input type="text" name="courseId" id="courseId">
-    <br>
+        <label for="studentId">Student ID</label>
+        <input type="text" name="studentId" id="studentId">
+        <br>
 
-    <input type="submit" value="Add">
-</form>
+        <label for="courseId">Course ID</label>
+        <input type="text" name="courseId" id="courseId">
+        <br>
 
-<h2>Remove Student from Course</h2>
+        <input type="submit" value="Add">
+    </form>
 
-<form action="/utils/course/removeStudent" method="post">
+    <h2>Remove Student from Course</h2>
 
-    <label for="studentId">Student ID</label>
-    <input type="text" name="studentId" id="studentIdRm">
-    <br>
+    <form action="/utils/course/removeStudent" method="post">
 
-    <label for="courseId">Course ID</label>
-    <input type="text" name="courseId" id="courseIdRm">
-    <br>
+        <label for="studentId">Student ID</label>
+        <input type="text" name="studentId" id="studentIdRm">
+        <br>
 
-    <input type="submit" value="Remove">
-</form>
+        <label for="courseId">Course ID</label>
+        <input type="text" name="courseId" id="courseIdRm">
+        <br>
+
+        <input type="submit" value="Remove">
+    </form>
+
+</div>
 
 </body>
 </html>

@@ -1,5 +1,6 @@
 package org.learning.studentManagement.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
@@ -10,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,7 +73,8 @@ public class StudentPageController {
             @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
             @RequestParam(value = "selectedGroup", required = false, defaultValue = "") String selectedGroupId,
-            Model model
+            Model model,
+            HttpServletRequest request
     ) {
         List<Student> students = studentService.findAll();
         List<Group> groups = groupService.findAll();
@@ -79,6 +82,10 @@ public class StudentPageController {
         int totalStudentCount = students.size();
         int pageCount = (int) Math.ceil(students.size() / 10.0);
         students = formatList(students, sortBy, Integer.valueOf(pageNum), selectedGroupId);
+
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        model.addAttribute("admin", isAdmin);
 
         model.addAttribute("students", students);
         model.addAttribute("groups", groups);
@@ -92,11 +99,14 @@ public class StudentPageController {
     }
 
     @GetMapping("/student/{id}")
-    public String student(@PathVariable Integer id, Model model) {
+    public String student(@PathVariable Integer id, Model model, HttpServletRequest request) {
         Student student = studentService.findById(id);
 
-        model.addAttribute("student", student);
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        model.addAttribute("admin", isAdmin);
 
+        model.addAttribute("student", student);
         return "oneStudent";
     }
 

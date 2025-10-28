@@ -14,8 +14,7 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class LoggingFilter implements Filter {
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void doFilter(

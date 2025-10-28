@@ -1,11 +1,13 @@
 package org.learning.studentManagement.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +27,13 @@ public class GroupPageController {
     private GroupService groupService;
 
     @GetMapping("/group")
-    public String group(Model model) throws JsonProcessingException {
+    public String group(Model model, HttpServletRequest request) throws JsonProcessingException {
         List<Group> groups = groupService.findAll();
+
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        model.addAttribute("admin", isAdmin);
+
         model.addAttribute("groups", groups);
         return "group";
     }

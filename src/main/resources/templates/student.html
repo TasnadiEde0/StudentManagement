@@ -2,65 +2,68 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Students</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+<form action="/logout" method="post"><input type="submit" value="Logout"></form>
 
-    <a HREF="/group">Groups</a>
-    <br>
-    <a HREF="/course">Courses</a>
+<a HREF="/group">Groups</a>
+<br>
+<a HREF="/course">Courses</a>
 
-    <h1>Students</h1>
+<h1>Students</h1>
 
-    <p th:text="@{__${totalStudentCount}__ students are available.}"></p>
+<p th:text="@{__${totalStudentCount}__ students are available.}"></p>
 
-    <form>
-        <label for="sortBy">Sort by</label>
-        <select id="sortBy" name="sortBy">
-            <option value="id" th:selected="(${currentSortBy} == 'id')">ID</option>
-            <option value="firstName" th:selected="(${currentSortBy} == 'firstName')">First Name</option>
-            <option value="lastName" th:selected="(${currentSortBy} == 'lastName')">Last Name</option>
-            <option value="email" th:selected="(${currentSortBy} == 'email')">Email</option>
-        </select>
+<form>
+    <label for="sortBy">Sort by</label>
+    <select id="sortBy" name="sortBy">
+        <option value="id" th:selected="(${currentSortBy} == 'id')">ID</option>
+        <option value="firstName" th:selected="(${currentSortBy} == 'firstName')">First Name</option>
+        <option value="lastName" th:selected="(${currentSortBy} == 'lastName')">Last Name</option>
+        <option value="email" th:selected="(${currentSortBy} == 'email')">Email</option>
+    </select>
 
-        <label for="pageNum">Page</label>
-        <select id="pageNum" name="pageNum">
-            <option th:each="i : ${#numbers.sequence(1, pageCount)}" th:value="${i}" th:text="${i}" th:selected="(${i} == *{currentPageNum})"></option>
-        </select>
+    <label for="pageNum">Page</label>
+    <select id="pageNum" name="pageNum">
+        <option th:each="i : ${#numbers.sequence(1, pageCount)}" th:value="${i}" th:text="${i}" th:selected="(${i} == *{currentPageNum})"></option>
+    </select>
 
-        <label for="selectedGroup">Group</label>
-        <select id="selectedGroup" name="selectedGroup">
-            <option value="" th:selected="(${currentSelectedGroup} == '')">All</option>
-            <option th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}" th:selected="(${group.id} == *{currentSelectedGroup})"></option>
-        </select>
+    <label for="selectedGroup">Group</label>
+    <select id="selectedGroup" name="selectedGroup">
+        <option value="" th:selected="(${currentSelectedGroup} == '')">All</option>
+        <option th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}" th:selected="(${group.id} == *{currentSelectedGroup})"></option>
+    </select>
 
-        <input type="submit" value="Show">
-    </form>
+    <input type="submit" value="Show">
+</form>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Profile Picture</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>CNP</th>
-            <th>Group</th>
-            <th></th>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Profile Picture</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>CNP</th>
+        <th>Group</th>
+        <th></th>
+    </tr>
+    <tbody>
+        <tr th:each="student : ${students}">
+            <td th:text="${student.id}"></td>
+            <td><img th:src="@{/imgs/__${student.imgName}__}" height="50"></td>
+            <td th:text="${student.firstName}"></td>
+            <td th:text="${student.lastName}"></td>
+            <td th:text="${student.email}"></td>
+            <td th:text="${student.cnp}"></td>
+            <td th:text="${student.group}!=null?${student.group.name}:''"></td>
+            <td><a th:href="@{/student/__${student.id}__}">Own Page</a></td>
         </tr>
-        <tbody>
-            <tr th:each="student : ${students}">
-                <td th:text="${student.id}"></td>
-                <td><img th:src="@{/imgs/__${student.imgName}__}" height="50"></td>
-                <td th:text="${student.firstName}"></td>
-                <td th:text="${student.lastName}"></td>
-                <td th:text="${student.email}"></td>
-                <td th:text="${student.cnp}"></td>
-                <td th:text="${student.group}!=null?${student.group.name}:''"></td>
-                <td><a th:href="@{/student/__${student.id}__}">Own Page</a></td>
-            </tr>
-        </tbody>
-    </table>
+    </tbody>
+</table>
+
+<div th:if="${admin}">
 
     <h2>Add Student</h2>
 
@@ -144,7 +147,7 @@
 
     </form>
 
-
+</div>
 
 </body>
 </html>

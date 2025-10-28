@@ -28,7 +28,9 @@
         <th>Course Name</th>
         <th>Starting Date</th>
         <th>Ending Date</th>
-        <th></th>
+        <div th:if="${admin}">
+            <th></th>
+        </div>
     </tr>
 
     <tr th:each="course : ${student.courses}">
@@ -36,26 +38,29 @@
         <td th:text="${course.name}"></td>
         <td th:text="${course.startDate}"></td>
         <td th:text="${course.endDate}"></td>
-        <td>
-            <form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
-                <input type="submit" value="Leave">
-            </form>
-        </td>
+        <div th:if="${admin}">
+            <td>
+                <form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
+                    <input type="submit" value="Leave">
+                </form>
+            </td>
+        </div>
     </tr>
 
 </table>
 
+<div th:if="${admin}">
+    <h2>Enter Course</h2>
 
-<h2>Enter Course</h2>
+    <form th:action="@{/utils/student/enterCourse?studentId=__${student.id}__}" method="post">
 
-<form th:action="@{/utils/student/enterCourse?studentId=__${student.id}__}" method="post">
+        <label for="courseId">Course ID</label>
+        <input type="text" name="courseId" id="courseId">
+        <br>
 
-    <label for="courseId">Course ID</label>
-    <input type="text" name="courseId" id="courseId">
-    <br>
-
-    <input type="submit" value="Enter">
-</form>
+        <input type="submit" value="Enter">
+    </form>
+</div>
 
 <!--<h2>Leave Course</h2>-->
 
