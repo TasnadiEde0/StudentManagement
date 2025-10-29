@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="/styles.css">
@@ -15,6 +15,14 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <br>
+
+        <div th:if="${param.error}">
+            <p>Invalid username or password</p>
+        </div>
+
+        <div th:if="${param.logout}">
+            <p>You have been successfully logged out!</p>
+        </div>
 
         <input type="submit" value="Submit">
     </form>

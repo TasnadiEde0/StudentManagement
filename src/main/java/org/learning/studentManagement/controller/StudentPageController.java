@@ -85,7 +85,10 @@ public class StudentPageController {
 
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        var a = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("admin", isAdmin);
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("loggedInUsername", username);
 
         model.addAttribute("students", students);
         model.addAttribute("groups", groups);
@@ -105,6 +108,8 @@ public class StudentPageController {
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         model.addAttribute("admin", isAdmin);
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("loggedInUsername", username);
 
         model.addAttribute("student", student);
         return "oneStudent";

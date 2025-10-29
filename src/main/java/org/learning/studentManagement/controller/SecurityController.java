@@ -1,8 +1,11 @@
 package org.learning.studentManagement.controller;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,12 +39,11 @@ public class SecurityController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
     private JdbcUserDetailsManager userDetailsManager;
 
-    @PostConstruct
-    public void init() {
-        userDetailsManager = new JdbcUserDetailsManager(dataSource);
-    }
+    @Autowired
+    private SecurityContextRepository securityContextRepository;
 
     @GetMapping("/register")
     public String register() {
@@ -50,7 +53,7 @@ public class SecurityController {
     @PostMapping("/register")
     public RedirectView register(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("password2")  String password2) {
 
-        if(password != null && password.equals(password2)) {
+        if(password != null && !password.equals(password2)) {
             throw new IllegalArgumentException("Passwords don't match!");
         }
 
@@ -70,7 +73,8 @@ public class SecurityController {
     public RedirectView login(
             @RequestParam("username") String username,
             @RequestParam("password") String password,
-            HttpServletRequest request
+            HttpServletRequest request,
+            HttpServletResponse response
     ) {
         UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
 
@@ -79,19 +83,10 @@ public class SecurityController {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
 
-        HttpSession httpSession = request.getSession(true);
-        httpSession.setAttribute("auth", securityContext);
+        SecurityContextHolder.setContext(securityContext);
+        securityContextRepository.saveContext(securityContext, request, response);
 
         return new RedirectView("/student");
-
-    }
-
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(AccessDeniedException.class)
-    public String handleAccessDenied(AccessDeniedException ex, Model model) {
-        model.addAttribute("errorMsg", ex.getMessage());
-
-        return "error";
 
     }
 

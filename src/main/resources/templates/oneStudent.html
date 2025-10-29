@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+<form action="/logout" method="post"><input type="submit" value="Logout"></form>
+<p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
+
 <a HREF="/student">Student</a>
 <br>
 

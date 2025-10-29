@@ -33,6 +33,8 @@ public class GroupPageController {
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         model.addAttribute("admin", isAdmin);
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("loggedInUsername", username);
 
         model.addAttribute("groups", groups);
         return "group";
