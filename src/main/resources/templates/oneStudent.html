@@ -52,10 +52,10 @@
 
 </table>
 
-<div th:if="${admin}">
+<div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
     <h2>Enter Course</h2>
 
-    <form th:action="@{/utils/student/enterCourse?studentId=__${student.id}__}" method="post">
+    <form th:action="@{/student/enterCourse?studentId=__${student.id}__}" method="post">
 
         <label for="courseId">Course ID</label>
         <input type="text" name="courseId" id="courseId">

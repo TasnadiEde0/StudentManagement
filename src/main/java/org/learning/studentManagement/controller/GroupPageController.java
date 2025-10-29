@@ -7,7 +7,7 @@ import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
+
+import static org.learning.studentManagement.utils.SecurityUtils.addAuthsAndNameToModel;
 
 @Slf4j
 @Controller
@@ -30,17 +32,13 @@ public class GroupPageController {
     public String group(Model model, HttpServletRequest request) throws JsonProcessingException {
         List<Group> groups = groupService.findAll();
 
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        model.addAttribute("admin", isAdmin);
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("loggedInUsername", username);
-
+        addAuthsAndNameToModel(model);
         model.addAttribute("groups", groups);
         return "group";
     }
 
-    @PostMapping("/utils/group/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/group/add")
     public RedirectView addGroup(
             @RequestParam(value = "name") String name
     ) {
@@ -50,7 +48,8 @@ public class GroupPageController {
 
     }
 
-    @PostMapping("/utils/group/delete")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/group/delete")
     public RedirectView deleteGroup(
             @RequestParam(value = "id") String id
     ) {
@@ -60,7 +59,8 @@ public class GroupPageController {
 
     }
 
-    @PostMapping("/utils/group/alter")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/group/alter")
     public RedirectView alterGroup(
             @RequestParam(value = "id") String id,
             @RequestParam(value = "name", required = false, defaultValue = "") String name

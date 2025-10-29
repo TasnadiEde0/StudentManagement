@@ -1,6 +1,5 @@
 package org.learning.studentManagement.service;
 
-import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;

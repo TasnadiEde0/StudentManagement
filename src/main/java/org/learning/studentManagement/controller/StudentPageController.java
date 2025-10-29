@@ -8,10 +8,9 @@ import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +23,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static org.learning.studentManagement.utils.SecurityUtils.addAuthsAndNameToModel;
 
 @Slf4j
 @Controller
@@ -83,13 +83,7 @@ public class StudentPageController {
         int pageCount = (int) Math.ceil(students.size() / 10.0);
         students = formatList(students, sortBy, Integer.valueOf(pageNum), selectedGroupId);
 
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        var a = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("admin", isAdmin);
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("loggedInUsername", username);
-
+        addAuthsAndNameToModel(model);
         model.addAttribute("students", students);
         model.addAttribute("groups", groups);
         model.addAttribute("totalStudentCount", totalStudentCount);
@@ -105,17 +99,14 @@ public class StudentPageController {
     public String student(@PathVariable Integer id, Model model, HttpServletRequest request) {
         Student student = studentService.findById(id);
 
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        model.addAttribute("admin", isAdmin);
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("loggedInUsername", username);
 
+        addAuthsAndNameToModel(model);
         model.addAttribute("student", student);
         return "oneStudent";
     }
 
-    @PostMapping("/utils/student/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/student/add")
     public RedirectView addStudent(
             @RequestParam(value = "profilePic") MultipartFile file,
             @RequestParam(value = "firstName") String firstName,
@@ -131,7 +122,8 @@ public class StudentPageController {
 
     }
 
-    @PostMapping("/utils/student/delete")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/student/delete")
     public RedirectView deleteStudent(
             @RequestParam(value = "id") String id
     ) {
@@ -142,7 +134,8 @@ public class StudentPageController {
 
     }
 
-    @PostMapping("/utils/student/alter")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/student/alter")
     public RedirectView alterStudent(
             @RequestParam(value = "profilePic") MultipartFile file,
             @RequestParam(value = "id") String id,
@@ -170,7 +163,8 @@ public class StudentPageController {
                 .body(resource);
     }
 
-    @PostMapping("/utils/student/enterCourse")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/student/enterCourse")
     public RedirectView enterCourse(
             @RequestParam(value = "studentId") String studentId,
             @RequestParam(value = "courseId") String courseId
@@ -181,7 +175,8 @@ public class StudentPageController {
 
     }
 
-    @PostMapping("/utils/student/leaveCourse")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/student/leaveCourse")
     public RedirectView leaveCourse(
             @RequestParam(value = "studentId") String studentId,
             @RequestParam(value = "courseId") String courseId

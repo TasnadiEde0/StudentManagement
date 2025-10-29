@@ -34,7 +34,7 @@
             <td th:text="${student.firstName}"></td>
             <td th:text="${student.lastName}"></td>
             <td>
-                <form th:action="@{/utils/course/removeStudent?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
+                <form th:action="@{/course/removeStudent?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
                     <input type="submit" value="Remove">
                 </form>
             </td>
@@ -43,11 +43,11 @@
 
 </div>
 
-<div th:if="${admin}">
+<div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
 
     <h2>Add Course</h2>
 
-    <form action="/utils/course/add" method="post">
+    <form action="/course/add" method="post">
 
         <label for="name">Name</label>
         <input type="text" name="name" id="name">
@@ -67,7 +67,7 @@
 
     <h2>Delete Course</h2>
 
-    <form action="/utils/course/delete" method="post">
+    <form action="/course/delete" method="post">
 
         <label for="id">ID</label>
         <input type="text" name="id" id="id">
@@ -79,7 +79,7 @@
 
     <h2>Alter Delete Course</h2>
 
-    <form action="/utils/course/alter" method="post">
+    <form action="/course/alter" method="post">
 
         <label for="id">ID</label>
         <input type="text" name="id" id="idAlter">
@@ -103,7 +103,7 @@
 
     <h2>Add Student to Course</h2>
 
-    <form action="/utils/course/addStudent" method="post">
+    <form action="/course/addStudent" method="post">
 
         <label for="studentId">Student ID</label>
         <input type="text" name="studentId" id="studentId">
@@ -118,7 +118,7 @@
 
     <h2>Remove Student from Course</h2>
 
-    <form action="/utils/course/removeStudent" method="post">
+    <form action="/course/removeStudent" method="post">
 
         <label for="studentId">Student ID</label>
         <input type="text" name="studentId" id="studentIdRm">

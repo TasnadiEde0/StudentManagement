@@ -1,13 +1,8 @@
 package org.learning.studentManagement.controller;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,17 +10,16 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.sql.DataSource;
-import java.nio.file.AccessDeniedException;
 
 @Controller
 public class SecurityController {
@@ -51,9 +45,9 @@ public class SecurityController {
     }
 
     @PostMapping("/register")
-    public RedirectView register(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("password2")  String password2) {
+    public RedirectView register(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("password2") String password2) {
 
-        if(password != null && !password.equals(password2)) {
+        if (password != null && !password.equals(password2)) {
             throw new IllegalArgumentException("Passwords don't match!");
         }
 

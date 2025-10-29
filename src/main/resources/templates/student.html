@@ -64,11 +64,11 @@
     </tbody>
 </table>
 
-<div th:if="${admin}">
+<div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
 
     <h2>Add Student</h2>
 
-    <form action="/utils/student/add" method="post" enctype="multipart/form-data">
+    <form action="/student/add" method="post" enctype="multipart/form-data">
 
         <label for="profilePic">Profile Picture</label>
         <input type="file" id="profilePic" name="profilePic">
@@ -100,7 +100,7 @@
 
     <h2>Delete Student</h2>
 
-    <form action="/utils/student/delete" method="post">
+    <form action="/student/delete" method="post">
 
         <label for="id">ID </label>
         <input type="text" name="id" id="id">
@@ -111,7 +111,7 @@
 
     <h2>Alter Student</h2>
 
-    <form action="/utils/student/alter" method="post" enctype="multipart/form-data">
+    <form action="/student/alter" method="post" enctype="multipart/form-data">
 
         <label for="profilePicAlter">Profile Picture</label>
         <input type="file" id="profilePicAlter" name="profilePic">

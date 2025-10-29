@@ -1,8 +1,6 @@
 package org.learning.studentManagement.service;
 
 import org.learning.studentManagement.model.Course;
-import org.learning.studentManagement.model.Group;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
