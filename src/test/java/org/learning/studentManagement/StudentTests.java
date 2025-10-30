@@ -245,6 +245,34 @@ public class StudentTests {
 
     @Test
     @WithMockUser(username = "admin", password = "admin")
+    void enterCourse_duplicateConnection_is4xx() throws Exception {
+        //setup
+        MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
+                "multipart/form-data", "upload/imgs/red.png".getBytes());
+        Student student = studentService.save("firstName",
+                "lastName", "email@email.email", "1234512345123", "groupName", file);
+        String studentId = String.valueOf(student.getId());
+        Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
+        String courseId = String.valueOf(course.getId());
+        studentService.enterCourse(student.getId(), course.getId());
+
+        //execution
+        mockMvc.perform(post("/student/enterCourse")
+                        .param("courseId", courseId)
+                        .param("studentId", studentId)
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("error"))
+                .andDo(print());
+
+        //cleanup
+        studentService.leaveCourse(student.getId(), course.getId());
+        studentService.delete(studentId);
+        courseService.delete(course.getId());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin")
     void leaveCourse_isOk() throws Exception {
         //setup
         MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
@@ -266,6 +294,35 @@ public class StudentTests {
                 .andDo(print());
 
         //cleanup
+        studentService.delete(studentId);
+        courseService.delete(course.getId());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin")
+    void leaveCourse_incorrectCourseId_is4xx() throws Exception {
+        //setup
+        MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
+                "multipart/form-data", "upload/imgs/red.png".getBytes());
+        Student student = studentService.save("firstName",
+                "lastName", "email@email.email", "1234512345123", "groupName", file);
+        String studentId = String.valueOf(student.getId());
+        String falseStudentId = String.valueOf(student.getId() * 100000);
+        Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
+        String courseId = String.valueOf(course.getId());
+        studentService.enterCourse(student.getId(), course.getId());
+
+        //execution
+        mockMvc.perform(post("/student/leaveCourse")
+                        .param("courseId", courseId)
+                        .param("studentId", falseStudentId)
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("error"))
+                .andDo(print());
+
+        //cleanup
+        studentService.leaveCourse(student.getId(), course.getId());
         studentService.delete(studentId);
         courseService.delete(course.getId());
     }

@@ -167,7 +167,7 @@ public class CourseServiceImp implements CourseService {
         Student student = studentDao.findById(studentId).orElseThrow(() ->
                 new IllegalArgumentException("The given ID isn't associated with a student!"));
 
-        if (!course.getStudents().contains(student) || student.getCourses().contains(course)) {
+        if (!course.getStudents().contains(student) || !student.getCourses().contains(course)) {
             course.getStudents().add(student);
             student.getCourses().add(course);
 

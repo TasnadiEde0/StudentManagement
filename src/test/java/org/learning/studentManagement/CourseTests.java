@@ -42,8 +42,8 @@ public class CourseTests {
     }
 
     @Test
-    @WithMockUser(username = "user", password = "user", roles = {"USER"})
-    void coursePage_noFilters_isOk() throws Exception {
+    @WithMockUser(username = "user", password = "user")
+    void coursePage_isOk() throws Exception {
         //execution
         mockMvc.perform(get("/course"))
                 .andExpect(status().isOk())
@@ -69,6 +69,20 @@ public class CourseTests {
 
     @Test
     @WithMockUser(username = "admin", password = "admin")
+    void addCourse_endDateAfterStartDate_is4xx() throws Exception {
+        //execution
+        mockMvc.perform(post("/course/add")
+                        .param("name", "courseName")
+                        .param("endDate", "2025-01-01")
+                        .param("startDate", "2025-12-31")
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("error"))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin")
     void deleteCourse_isOk() throws Exception {
         //setup
         Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
@@ -81,6 +95,26 @@ public class CourseTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course"))
                 .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin")
+    void deleteCourse_incorrectlyIntroducedId_is4xx() throws Exception {
+        //setup
+        Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
+        String courseId = String.valueOf(course.getId());
+
+        //execution
+        mockMvc.perform(post("/course/delete")
+                        .param("id", "-" + courseId)
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("error"))
+                .andDo(print());
+
+        //cleanup
+        courseService.findByName("courseName")
+                .ifPresent(sameCourse -> courseService.delete(sameCourse.getId()));
     }
 
     @Test
@@ -99,6 +133,26 @@ public class CourseTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course"))
                 .andDo(print());
+
+        //cleanup
+        courseService.findByName("courseName")
+                .ifPresent(newCourse -> courseService.delete(newCourse.getId()));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin")
+    void alterCourse_newEndDateBeforeStartDate_is4xx() throws Exception {
+        //setup
+        Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
+        String courseId = String.valueOf(course.getId());
+
+        //execution
+        mockMvc.perform(post("/course/alter")
+                        .param("id", courseId)
+                        .param("endDate", "2024-12-31")
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("error"));
 
         //cleanup
         courseService.findByName("courseName")
@@ -127,7 +181,35 @@ public class CourseTests {
                 .andDo(print());
 
         //cleanup
-        studentService.leaveCourse(student.getId(), course.getId());
+        courseService.removeStudent(student.getId(), course.getId());
+        studentService.delete(studentId);
+        courseService.delete(course.getId());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin")
+    void addStudent_alreadyAttending_is4xx() throws Exception {
+        //setup
+        MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
+                "multipart/form-data", "upload/imgs/red.png".getBytes());
+        Student student = studentService.save("firstName",
+                "lastName", "email@email.email", "1234512345123", "groupName", file);
+        String studentId = String.valueOf(student.getId());
+        Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
+        String courseId = String.valueOf(course.getId());
+        courseService.addStudent(student.getId(), course.getId());
+
+        //execution
+        mockMvc.perform(post("/course/addStudent")
+                        .param("courseId", courseId)
+                        .param("studentId", studentId)
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("error"))
+                .andDo(print());
+
+        //cleanup
+        courseService.removeStudent(student.getId(), course.getId());
         studentService.delete(studentId);
         courseService.delete(course.getId());
     }
@@ -143,7 +225,7 @@ public class CourseTests {
         String studentId = String.valueOf(student.getId());
         Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
         String courseId = String.valueOf(course.getId());
-        studentService.enterCourse(student.getId(), course.getId());
+        courseService.addStudent(student.getId(), course.getId());
 
         //execution
         mockMvc.perform(post("/course/removeStudent")
@@ -159,19 +241,32 @@ public class CourseTests {
         courseService.delete(course.getId());
     }
 
+    @Test
+    @WithMockUser(username = "admin", password = "admin")
+    void removeStudent_incorrectIds_is4xx() throws Exception {
+        //setup
+        MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
+                "multipart/form-data", "upload/imgs/red.png".getBytes());
+        Student student = studentService.save("firstName",
+                "lastName", "email@email.email", "1234512345123", "groupName", file);
+        String studentId = String.valueOf(student.getId());
+        Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
+        String courseId = String.valueOf(course.getId());
+        courseService.addStudent(student.getId(), course.getId());
 
+        //execution
+        mockMvc.perform(post("/course/removeStudent")
+                        .param("courseId", courseId + "1")
+                        .param("studentId", studentId + "1")
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("error"))
+                .andDo(print());
 
-
-
-
-
-
-
-
-
-
-
-
-
+        //cleanup
+        courseService.removeStudent(student.getId(), course.getId());
+        studentService.delete(studentId);
+        courseService.delete(course.getId());
+    }
 
 }
