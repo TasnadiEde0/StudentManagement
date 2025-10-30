@@ -23,7 +23,12 @@ public class ExceptionHandlerController {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgumentException(Model model, IllegalArgumentException ex) {
-        model.addAttribute("errorMsg", ex.getMessage());
+        if(ex instanceof NumberFormatException) {
+            model.addAttribute("errorMsg", "Not a vaild ID: " + ex.getMessage().substring(17));
+        }
+        else {
+            model.addAttribute("errorMsg", ex.getMessage());
+        }
 
         return "error";
     }

@@ -2,9 +2,11 @@ package org.learning.studentManagement.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import org.learning.studentManagement.dataaccess.CourseDao;
 import org.learning.studentManagement.dataaccess.StudentDao;
 import org.learning.studentManagement.model.Course;
+import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,13 @@ public class CourseServiceImp implements CourseService {
 
     @Autowired
     private EntityManager entityManager;
+
+    private void courseDuplicateCheck(String name) throws IllegalArgumentException {
+        Optional<Course> testCourse = courseDao.findByName(name);
+        if (testCourse.isPresent()) {
+            throw new IllegalArgumentException("Course name already taken!");
+        }
+    }
 
     /**
      * Find the Course with the provided {@code id}
@@ -66,12 +75,26 @@ public class CourseServiceImp implements CourseService {
      * @param startDate Staring date of the Course
      * @param endDate   Ending date of the Course
      * @return Saved Course
-     * @throws IllegalArgumentException If the {@code startDate} is after the {@code endDate}
+     * @throws IllegalArgumentException If the {@code startDate} is
+     * after the {@code endDate} or {@code name} isn't unique
      */
     @Override
-    public Course save(String name, LocalDate startDate, LocalDate endDate) throws IllegalArgumentException {
+    public Course save(
+            String name,
+            LocalDate startDate,
+            LocalDate endDate
+    ) throws IllegalArgumentException {
         Course course = new Course();
+
+        courseDuplicateCheck(name);
         course.setName(name);
+
+        if (startDate == null) {
+            throw new IllegalArgumentException("Starting Date can't be null");
+        }
+        if (endDate == null) {
+            throw new IllegalArgumentException("Ending Date can't be null");
+        }
 
         if (startDate.isAfter(endDate)) {
             throw new IllegalArgumentException("The given start date is after the given end date!");

@@ -58,7 +58,7 @@
     <form th:action="@{/student/enterCourse?studentId=__${student.id}__}" method="post">
 
         <label for="courseId">Course ID</label>
-        <input type="text" name="courseId" id="courseId">
+        <input type="text" name="courseId" id="courseId" required>
         <br>
 
         <input type="submit" value="Enter">

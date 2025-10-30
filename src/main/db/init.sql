@@ -16,10 +16,10 @@ create table authorities (
 create unique index ix_auth_username on authorities (username,authority);
 
 INSERT INTO users(username, password, enabled) VALUES
-('user', '$2a$10$eS7yqwY7a.W0ekmpiJmQj.V6fIOeRYk7iRYaMdVbg31xTW1EXuLIO', 't', ),
-('admin', '$2a$10$4EQ7bMfL4SXtBbnH0iICRuzlQmehvKENVdJUS8ct.l2TPO21Yl1p2', 't', );
+('user', '$2a$10$eS7yqwY7a.W0ekmpiJmQj.V6fIOeRYk7iRYaMdVbg31xTW1EXuLIO', 't'),
+('admin', '$2a$10$4EQ7bMfL4SXtBbnH0iICRuzlQmehvKENVdJUS8ct.l2TPO21Yl1p2', 't');
 
-INSERT INTO authorities(username, authority) VALUES
+INSERT INTO authorities(authority, username) VALUES
 ('ROLE_USER', 'user'),
-('ROLE_ADMIN', 'admin');
+('ROLE_ADMIN', 'admin'),
 ('ROLE_USER', 'admin');

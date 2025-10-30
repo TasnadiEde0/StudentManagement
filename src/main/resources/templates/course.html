@@ -50,15 +50,15 @@
     <form action="/course/add" method="post">
 
         <label for="name">Name</label>
-        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="name" required>
         <br>
 
         <label for="startDate">Staring Date</label>
-        <input type="date" name="startDate" id="startDate">
+        <input type="date" name="startDate" id="startDate" required>
         <br>
 
         <label for="endDate">Ending Date</label>
-        <input type="date" name="endDate" id="endDate">
+        <input type="date" name="endDate" id="endDate" required>
         <br>
 
         <input type="submit" value="Add Course">
@@ -70,7 +70,7 @@
     <form action="/course/delete" method="post">
 
         <label for="id">ID</label>
-        <input type="text" name="id" id="id">
+        <input type="text" name="id" id="id" required>
         <br>
 
         <input type="submit" value="Delete Course">
@@ -82,7 +82,7 @@
     <form action="/course/alter" method="post">
 
         <label for="id">ID</label>
-        <input type="text" name="id" id="idAlter">
+        <input type="text" name="id" id="idAlter" required>
         <br>
 
         <label for="name">Name</label>

@@ -39,7 +39,7 @@
     <form action="/group/add" method="post">
 
         <label for="name">Name</label>
-        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="name" required>
         <br>
 
         <input type="submit" value="Add Group">
@@ -51,7 +51,7 @@
     <form action="/group/delete" method="post">
 
         <label for="id">ID</label>
-        <input type="text" name="id" id="id">
+        <input type="text" name="id" id="id" required>
         <br>
 
         <input type="submit" value="Delete Group">
@@ -63,7 +63,7 @@
     <form action="/group/alter" method="post">
 
         <label for="id">ID</label>
-        <input type="text" name="id" id="idAlter">
+        <input type="text" name="id" id="idAlter" required>
         <br>
 
         <label for="name">Name</label>

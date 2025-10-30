@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table(name = "tb_student")
+@Table(name = "tb_student", uniqueConstraints = {@UniqueConstraint(columnNames = {"firstName", "lastName"})})
 public class Student extends BaseObject {
     @Size(min = 1, max = 16, message = "First name should be between 1 and 16 characters")
     @Pattern(regexp = "^[a-zA-Z 1-9]*$", message = "First name contains invalid characters")

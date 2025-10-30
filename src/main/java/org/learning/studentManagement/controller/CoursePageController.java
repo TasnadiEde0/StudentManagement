@@ -1,6 +1,8 @@
 package org.learning.studentManagement.controller;
 
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.service.CourseService;
@@ -37,8 +39,8 @@ public class CoursePageController {
     @PostMapping("/course/add")
     public RedirectView addCourse(
             @RequestParam("name") String name,
-            @RequestParam("startDate") LocalDate startDate,
-            @RequestParam("endDate") LocalDate endDate
+            @Nullable @RequestParam("startDate") LocalDate startDate,
+            @Nullable @RequestParam("endDate") LocalDate endDate
     ) {
 
         courseService.save(name, startDate, endDate);
