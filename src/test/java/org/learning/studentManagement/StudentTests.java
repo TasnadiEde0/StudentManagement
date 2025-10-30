@@ -3,6 +3,7 @@ package org.learning.studentManagement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.learning.studentManagement.model.Course;
+import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.learning.studentManagement.service.CourseService;
 import org.learning.studentManagement.service.GroupService;
@@ -17,9 +18,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -57,24 +55,51 @@ public class StudentTests {
     @Test
     @WithMockUser(username = "user", password = "user")
     void studentPage_withFilters_isOk() throws Exception {
-        mockMvc.perform(get("/student?sortBy=firstName&pageNum=1&selectedGroup=1"))
+        //setup
+        Group group = groupService.save("groupNameTemp");
+
+        mockMvc.perform(get("/student?sortBy=firstName&pageNum=1&selectedGroup=" + group.getId()))
                 .andExpect(status().isOk()).andExpect(view().name("student"));
+
+        //cleanup
+        groupService.delete(String.valueOf(group.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", password = "user")
     void oneStudentPage_isOk() throws Exception {
+        //setup
+        MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
+                "multipart/form-data", "upload/imgs/red.png".getBytes());
+        Student student = studentService.save("firstName",
+                "lastName", "email@email.email", "1234512345123", "groupName", file);
+        String studentId = String.valueOf(student.getId());
+
         //execution
-        mockMvc.perform(get("/student/1")).andExpect(status().isOk())
+        mockMvc.perform(get("/student/" + studentId)).andExpect(status().isOk())
                 .andExpect(view().name("oneStudent"));
+
+        //cleanup
+        studentService.delete(studentId);
     }
 
     @Test
     @WithMockUser(username = "user", password = "user")
     void oneStudentPage_wrongId_is4xx() throws Exception {
+        //setup
+        MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
+                "multipart/form-data", "upload/imgs/red.png".getBytes());
+        Student student = studentService.save("firstName",
+                "lastName", "email@email.email", "1234512345123", "groupName", file);
+        String studentId = String.valueOf(student.getId());
+
         //execution
-        mockMvc.perform(get("/student/99")).andExpect(status().is4xxClientError())
+        mockMvc.perform(get("/student/" + studentId + "0"))
+                .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"));
+
+        //cleanup
+        studentService.delete(studentId);
     }
 
     @Test
@@ -177,8 +202,7 @@ public class StudentTests {
                 .andDo(print());
 
         //cleanup
-        studentService.findByCnp("1234512345124")
-                .ifPresent(student1 -> studentService.delete(String.valueOf(student1.getId())));
+        studentService.delete(String.valueOf(student.getId()));
         groupService.findByName("newGroupName")
                 .ifPresent(group -> groupService.delete(String.valueOf(group.getId())));
     }
@@ -194,6 +218,9 @@ public class StudentTests {
         String studentId = String.valueOf(student.getId());
         MockMultipartFile newFile = new MockMultipartFile("profilePic", "red.png",
                 "multipart/form-data", "upload/imgs/pic.png".getBytes());
+        Student otherStudent = studentService.save("otherFirstName",
+                "otherLastName", "otherEmail@email.email", "1234512345121", "groupName", file);
+        String otherStudentId = String.valueOf(otherStudent.getId());
 
         //execution
         mockMvc.perform(multipart("/student/alter")
@@ -202,7 +229,7 @@ public class StudentTests {
                         .param("firstName", "newFirstName")
                         .param("lastName", "newLastName")
                         .param("email", "newEmail@email.email")
-                        .param("cnp", "0000000000001")
+                        .param("cnp", otherStudent.getCnp())
                         .param("groupName", "newGroupName")
                 )
                 .andExpect(status().is4xxClientError())
@@ -210,8 +237,8 @@ public class StudentTests {
                 .andDo(print());
 
         //cleanup
-        studentService.findByCnp("1234512345123")
-                .ifPresent(student1 -> studentService.delete(String.valueOf(student1.getId())));
+        studentService.delete(studentId);
+        studentService.delete(otherStudentId);
         groupService.findByName("groupName")
                 .ifPresent(group -> groupService.delete(String.valueOf(group.getId())));
     }
@@ -307,7 +334,7 @@ public class StudentTests {
         Student student = studentService.save("firstName",
                 "lastName", "email@email.email", "1234512345123", "groupName", file);
         String studentId = String.valueOf(student.getId());
-        String falseStudentId = String.valueOf(student.getId() * 100000);
+        String incorrectStudentId = String.valueOf(student.getId() + 1);
         Course course = courseService.save("courseName", LocalDate.now(), LocalDate.now().plusDays(1));
         String courseId = String.valueOf(course.getId());
         studentService.enterCourse(student.getId(), course.getId());
@@ -315,7 +342,7 @@ public class StudentTests {
         //execution
         mockMvc.perform(post("/student/leaveCourse")
                         .param("courseId", courseId)
-                        .param("studentId", falseStudentId)
+                        .param("studentId", incorrectStudentId)
                 )
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"))

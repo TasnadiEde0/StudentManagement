@@ -113,8 +113,7 @@ public class CourseTests {
                 .andDo(print());
 
         //cleanup
-        courseService.findByName("courseName")
-                .ifPresent(sameCourse -> courseService.delete(sameCourse.getId()));
+        courseService.delete(course.getId());
     }
 
     @Test
@@ -135,8 +134,7 @@ public class CourseTests {
                 .andDo(print());
 
         //cleanup
-        courseService.findByName("courseName")
-                .ifPresent(newCourse -> courseService.delete(newCourse.getId()));
+        courseService.delete(course.getId());
     }
 
     @Test
@@ -155,8 +153,7 @@ public class CourseTests {
                 .andExpect(view().name("error"));
 
         //cleanup
-        courseService.findByName("courseName")
-                .ifPresent(newCourse -> courseService.delete(newCourse.getId()));
+        courseService.delete(course.getId());
     }
 
     @Test

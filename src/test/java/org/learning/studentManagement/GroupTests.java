@@ -63,6 +63,7 @@ public class GroupTests {
     @Test
     @WithMockUser(username = "admin", password = "admin")
     void addGroup_invalidCharacters_is4xx() throws Exception {
+        //setup
         String invalidGroupName = "$^*&*%^";
 
         //execution
@@ -73,9 +74,6 @@ public class GroupTests {
                 .andExpect(view().name("error"))
                 .andDo(print());
 
-        //cleanup
-        groupService.findByName("groupName")
-                .ifPresent(group -> groupService.delete(String.valueOf(group.getId())));
     }
 
     @Test
@@ -98,9 +96,12 @@ public class GroupTests {
     @WithMockUser(username = "admin", password = "admin")
     void deleteGroup_wrongId_is4xx() throws Exception {
         //setup
-        List<Group> groups = groupService.findAll();
-        Group group = groups.get(groups.size() - 1);
-        String incorrectGroupId = String.valueOf(group.getId() + 1);
+//        List<Group> groups = groupService.findAll();
+//        Group group = groups.get(groups.size() - 1);
+//        String incorrectGroupId = String.valueOf(group.getId() + 1);
+
+        Group group =  groupService.save("groupName");
+        String incorrectGroupId = String.valueOf(group.getId()) + "0";
 
         //execution
         mockMvc.perform(post("/group/delete")
@@ -109,6 +110,9 @@ public class GroupTests {
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"))
                 .andDo(print());
+
+        //cleanup
+        groupService.delete(String.valueOf(group.getId()));
     }
 
     @Test
@@ -128,8 +132,7 @@ public class GroupTests {
                 .andDo(print());
 
         //cleanup
-        groupService.findByName("newGroupName")
-                .ifPresent(newGroup -> groupService.delete(String.valueOf(newGroup.getId())));
+        groupService.delete(groupId);
     }
 
     @Test
@@ -138,22 +141,20 @@ public class GroupTests {
         //setup
         Group group = groupService.save("groupName");
         String groupId = String.valueOf(group.getId());
-        String otherName = groupService.findAll().stream()
-                .filter(fGroup -> !fGroup.equals(group)).toList().get(0).getName();
-
+        Group otherGroup = groupService.save("otherGroupName");
 
         //execution
         mockMvc.perform(post("/group/alter")
                         .param("id", groupId)
-                        .param("name", otherName)
+                        .param("name", otherGroup.getName())
                 )
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"))
                 .andDo(print());
 
         //cleanup
-        groupService.findByName("groupName")
-                .ifPresent(newGroup -> groupService.delete(String.valueOf(newGroup.getId())));
+        groupService.delete(groupId);
+        groupService.delete(String.valueOf(otherGroup.getId()));
     }
 
 }

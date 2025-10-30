@@ -56,6 +56,10 @@ public class StudentPageController {
                     student.getGroup().getId() == Integer.parseInt(selectedGroupId)).toList();
         }
 
+        if (list.isEmpty()) {
+            return list;
+        }
+
         int pageCount = (int) Math.ceil(list.size() / 10.0);
 
         if (pageCount < pageNum) {
