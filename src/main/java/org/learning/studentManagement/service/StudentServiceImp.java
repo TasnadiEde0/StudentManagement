@@ -223,9 +223,11 @@ public class StudentServiceImp implements StudentService {
             student.setLastName(lastName);
         }
         if (email != null && !email.isEmpty()) {
+            emailDuplicateCheck(email);
             student.setEmail(email);
         }
         if (cnp != null && !cnp.isEmpty()) {
+            cnpDuplicateCheck(cnp);
             student.setCnp(cnp);
         }
         if (groupid != null && !groupid.isEmpty()) {
@@ -234,10 +236,9 @@ public class StudentServiceImp implements StudentService {
         }
 
         if (!file.isEmpty()) {
-            Path imgPath = Paths.get(UPLOAD_DIRECTORY, student.getCnp() + "_" + ".png");
+            Path imgPath = Paths.get(UPLOAD_DIRECTORY, student.getCnp() + ".png");
             Files.write(imgPath, file.getBytes());
-            student.setImgName(student.getCnp() + "_" +
-                    student.getFirstName() + ".png");
+            student.setImgName(student.getCnp() + ".png");
         }
 
         studentDao.update(student);
