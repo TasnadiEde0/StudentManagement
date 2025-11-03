@@ -39,7 +39,7 @@ public class StudentServiceImp implements StudentService {
     @Autowired
     private EntityManager entityManager;
 
-    String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads/imgs";
+    private final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads/imgs";
 
     /**
      * Check if the email already belongs to a Student
@@ -329,7 +329,7 @@ public class StudentServiceImp implements StudentService {
             entityManager.persist(student);
 
         } else {
-            throw new IllegalArgumentException("The student is already in this course!");
+            throw new IllegalArgumentException("The student is not in this course!");
         }
     }
 

@@ -6,6 +6,7 @@ import org.learning.studentManagement.dataaccess.GroupDao;
 import org.learning.studentManagement.model.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +97,7 @@ public class GroupServiceImp implements GroupService {
     public void update(String id, String name) throws IllegalArgumentException {
         Group group = findById(Integer.parseInt(id));
 
-        if (!name.isEmpty()) {
+        if (name != null && !name.isEmpty()) {
             groupDuplicateCheck(name);
             group.setName(name);
         }

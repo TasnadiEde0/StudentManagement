@@ -75,21 +75,6 @@ public class StudentControllerTests {
         return student;
     }
 
-    private static Pair<Student, Course> createMockStudentAndCourse(boolean alreadyConnected) {
-        Student student = createMockStudent();
-
-        Course course = new Course();
-        course.setId(1);
-        course.setName("courseName");
-        course.setStartDate(LocalDate.now());
-        course.setEndDate(LocalDate.now().plusDays(1));
-        course.setStudents(new ArrayList<>(List.of(student)));
-
-        student.setCourses(new ArrayList<>(List.of(course)));
-
-        return  Pair.of(student, course);
-    }
-
     @Test
     @WithMockUser(username = "user", password = "user")
     void studentPage_noFilters_isOk() throws Exception {
