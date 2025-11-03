@@ -24,7 +24,7 @@ public interface StudentService {
 
     Student save(String firstName, String lastName, String email, String cnp, String groupName, MultipartFile file) throws IOException;
 
-    void update(String id, String firstName, String lastName, String email, String cnp, String groupName, MultipartFile file) throws IOException;
+    void update(String id, String firstName, String lastName, String email, String cnp, String groupId, MultipartFile file) throws IOException;
 
     void delete(String id);
 

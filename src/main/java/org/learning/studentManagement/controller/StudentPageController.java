@@ -141,7 +141,7 @@ public class StudentPageController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/student/alter")
     public RedirectView alterStudent(
-            @RequestParam(value = "profilePic") MultipartFile file,
+            @RequestParam(value = "profilePic", required = false) MultipartFile file,
             @RequestParam(value = "id") String id,
             @RequestParam(value = "firstName", required = false, defaultValue = "") String firstName,
             @RequestParam(value = "lastName", required = false, defaultValue = "") String lastName,

@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tb_student", uniqueConstraints = {@UniqueConstraint(columnNames = {"firstName", "lastName"})})
 public class Student extends BaseObject {
@@ -43,5 +44,9 @@ public class Student extends BaseObject {
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private List<Course> courses;
+
+    public Student(Group group) {
+        this.group = group;
+    }
 
 }

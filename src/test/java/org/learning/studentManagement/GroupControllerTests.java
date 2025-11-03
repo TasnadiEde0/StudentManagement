@@ -1,5 +1,6 @@
 package org.learning.studentManagement;
 
+import jakarta.validation.constraints.Pattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.learning.studentManagement.model.Group;
@@ -8,12 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,32 +25,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class GroupTests {
+public class GroupControllerTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
+    @MockitoBean
     private GroupService groupService;
 
     private MockMvc mockMvc;
 
     @BeforeEach
     public void setup() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
     @WithMockUser(username = "user", password = "user")
     void groupPage_isOk() throws Exception {
+        //setup
+        when(groupService.findAll()).thenReturn(new ArrayList<>());
+
         //execution
         mockMvc.perform(get("/group"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("group"));
+        verify(groupService, times(1)).findAll();
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin")
     void addGroup_isOk() throws Exception {
+        //setup
+        when(groupService.save("groupName")).thenReturn(new Group());
+
         //execution
         mockMvc.perform(post("/group/add")
                         .param("name", "groupName")
@@ -54,10 +65,9 @@ public class GroupTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/group"))
                 .andDo(print());
+        verify(groupService, times(1)).save("groupName");
 
         //cleanup
-        groupService.findByName("groupName")
-                .ifPresent(group -> groupService.delete(String.valueOf(group.getId())));
     }
 
     @Test
@@ -65,6 +75,7 @@ public class GroupTests {
     void addGroup_invalidCharacters_is4xx() throws Exception {
         //setup
         String invalidGroupName = "$^*&*%^";
+        when(groupService.save("$^*&*%^")).thenThrow(IllegalArgumentException.class);
 
         //execution
         mockMvc.perform(post("/group/add")
@@ -73,88 +84,83 @@ public class GroupTests {
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"))
                 .andDo(print());
+        verify(groupService, times(1)).save("$^*&*%^");
 
+        //cleanup
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin")
     void deleteGroup_isOk() throws Exception {
         //setup
-        Group group = groupService.save("groupName");
-        String groupId = String.valueOf(group.getId());
+        doNothing().when(groupService).delete("1");
 
         //execution
         mockMvc.perform(post("/group/delete")
-                        .param("id", groupId)
+                        .param("id", "1")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/group"))
                 .andDo(print());
+        verify(groupService, times(1)).delete("1");
+
+        //cleanup
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin")
     void deleteGroup_wrongId_is4xx() throws Exception {
         //setup
-//        List<Group> groups = groupService.findAll();
-//        Group group = groups.get(groups.size() - 1);
-//        String incorrectGroupId = String.valueOf(group.getId() + 1);
-
-        Group group =  groupService.save("groupName");
-        String incorrectGroupId = String.valueOf(group.getId()) + "0";
+        doThrow(IllegalArgumentException.class).when(groupService).delete("0");
 
         //execution
         mockMvc.perform(post("/group/delete")
-                        .param("id", incorrectGroupId)
+                        .param("id", "0")
                 )
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"))
                 .andDo(print());
+        verify(groupService, times(1)).delete("0");
 
         //cleanup
-        groupService.delete(String.valueOf(group.getId()));
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin")
     void alterGroup_isOk() throws Exception {
         //setup
-        Group group = groupService.save("groupName");
-        String groupId = String.valueOf(group.getId());
+        doNothing().when(groupService).update("1", "newGroupName");
 
         //execution
         mockMvc.perform(post("/group/alter")
-                        .param("id", groupId)
+                        .param("id", "1")
                         .param("name", "newGroupName")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/group"))
                 .andDo(print());
+        verify(groupService, times(1)).update("1", "newGroupName");
 
         //cleanup
-        groupService.delete(groupId);
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin")
     void alterGroup_duplicateNewName_is4xx() throws Exception {
         //setup
-        Group group = groupService.save("groupName");
-        String groupId = String.valueOf(group.getId());
-        Group otherGroup = groupService.save("otherGroupName");
+        doThrow(IllegalArgumentException.class).when(groupService).update("0", "groupName");
 
         //execution
         mockMvc.perform(post("/group/alter")
-                        .param("id", groupId)
-                        .param("name", otherGroup.getName())
+                        .param("id", "0")
+                        .param("name", "groupName")
                 )
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"))
                 .andDo(print());
+        verify(groupService, times(1)).update("0", "groupName");
 
         //cleanup
-        groupService.delete(groupId);
-        groupService.delete(String.valueOf(otherGroup.getId()));
     }
 
 }
