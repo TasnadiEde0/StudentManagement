@@ -3,12 +3,14 @@ package org.learning.studentManagement;
 import org.junit.jupiter.api.Test;
 import org.learning.studentManagement.dataaccess.GroupDao;
 import org.learning.studentManagement.model.Group;
+import org.learning.studentManagement.model.Student;
 import org.learning.studentManagement.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -197,14 +199,16 @@ public class GroupServiceTests {
     }
 
     @Test
-    public void delete_incorrectId_throwsException() throws Exception {
+    public void delete_hasMembers_throwsException() throws Exception {
         //setup
-        when(groupDao.findById(1)).thenReturn(Optional.empty());
+        Group group = createMockGroup();
+        group.setStudents(new ArrayList<>(List.of(new Student())));
+        when(groupDao.findById(1)).thenReturn(Optional.of(group));
 
         //execute
         Exception exception =
                 assertThrows(IllegalArgumentException.class, () -> groupService.delete("1"));
-        assertEquals("The given ID isn't associated with a group!", exception.getMessage());
+        assertEquals("The group has member students!", exception.getMessage());
         verify(groupDao, times(1)).findById(1);
         verify(groupDao, never()).delete(any());
 

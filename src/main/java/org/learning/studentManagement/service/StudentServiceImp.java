@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -255,6 +256,14 @@ public class StudentServiceImp implements StudentService {
     @Transactional
     public void delete(String id) throws IllegalArgumentException {
         Student student = findById(Integer.parseInt(id));
+
+        //detach courses from student
+        for(Course course : student.getCourses()) {
+            course.getStudents().remove(student);
+            entityManager.persist(course);
+        }
+        student.setCourses(new ArrayList<>());
+        entityManager.persist(student);
 
         studentDao.delete(student);
 

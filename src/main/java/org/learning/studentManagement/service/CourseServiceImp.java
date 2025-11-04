@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,6 +78,7 @@ public class CourseServiceImp implements CourseService {
      *                                  after the {@code endDate} or {@code name} isn't unique
      */
     @Override
+    @Transactional
     public Course save(
             String name,
             LocalDate startDate,
@@ -114,6 +116,7 @@ public class CourseServiceImp implements CourseService {
      * @throws IllegalArgumentException If the id belongs to no Course or the {@code startDate} is after the {@code endDate}
      */
     @Override
+    @Transactional
     public void update(Integer id, String name, LocalDate startDate, LocalDate endDate) throws IllegalArgumentException {
         Course course = findById(id);
 
@@ -142,8 +145,17 @@ public class CourseServiceImp implements CourseService {
      * @throws IllegalArgumentException If the {@code id} doesn't belong to a Course
      */
     @Override
+    @Transactional
     public void delete(Integer id) throws IllegalArgumentException {
         Course course = findById(id);
+
+        //detach course from students
+        for(Student student : course.getStudents()) {
+            student.getCourses().remove(course);
+            entityManager.persist(student);
+        }
+        course.setStudents(new ArrayList<>());
+        entityManager.persist(course);
 
         courseDao.delete(course);
 

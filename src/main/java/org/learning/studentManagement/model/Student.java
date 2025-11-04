@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -37,16 +39,13 @@ public class Student extends BaseObject {
     @JoinColumn(name = "group_id", nullable = true)
     private Group group;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {/*CascadeType.PERSIST, CascadeType.MERGE*/})
     @JoinTable(
             name = "tb_student_course",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
+//    @OnDelete(action = OnDeleteAction.SET_NULL)
     private List<Course> courses;
-
-    public Student(Group group) {
-        this.group = group;
-    }
 
 }

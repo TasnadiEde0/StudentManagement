@@ -116,6 +116,10 @@ public class GroupServiceImp implements GroupService {
     public void delete(String id) throws IllegalArgumentException {
         Group group = findById(Integer.parseInt(id));
 
+        if(!group.getStudents().isEmpty()) {
+            throw new IllegalArgumentException("The group has member students!");
+        }
+
         groupDao.delete(group);
     }
 }
