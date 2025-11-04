@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<form action="/logout" method="post"><input type="submit" value="Logout"></form>
+<form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
 <p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
 
 
@@ -47,7 +47,7 @@
 
     <h2>Add Course</h2>
 
-    <form action="/course/add" method="post">
+    <form th:action="@{/course/add}" method="post">
 
         <label for="name">Name</label>
         <input type="text" name="name" id="name" required>
@@ -67,7 +67,7 @@
 
     <h2>Delete Course</h2>
 
-    <form action="/course/delete" method="post">
+    <form th:action="@{/course/delete}" method="post">
 
         <label for="id">ID</label>
         <input type="text" name="id" id="id" required>
@@ -79,7 +79,7 @@
 
     <h2>Alter Course</h2>
 
-    <form action="/course/alter" method="post">
+    <form th:action="@{/course/alter}" method="post">
 
         <label for="id">ID</label>
         <input type="text" name="id" id="idAlter" required>
@@ -103,7 +103,7 @@
 
     <h2>Add Student to Course</h2>
 
-    <form action="/course/addStudent" method="post">
+    <form th:action="@{/course/addStudent}" method="post">
 
         <label for="studentId">Student ID</label>
         <input type="text" name="studentId" id="studentId">
@@ -118,7 +118,7 @@
 
     <h2>Remove Student from Course</h2>
 
-    <form action="/course/removeStudent" method="post">
+    <form th:action="@{/course/removeStudent}" method="post">
 
         <label for="studentId">Student ID</label>
         <input type="text" name="studentId" id="studentIdRm">
