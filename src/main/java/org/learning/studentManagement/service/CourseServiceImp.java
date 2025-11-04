@@ -150,7 +150,7 @@ public class CourseServiceImp implements CourseService {
         Course course = findById(id);
 
         //detach course from students
-        for(Student student : course.getStudents()) {
+        for (Student student : course.getStudents()) {
             student.getCourses().remove(course);
             entityManager.persist(student);
         }

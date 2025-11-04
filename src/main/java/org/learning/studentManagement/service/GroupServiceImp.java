@@ -6,7 +6,6 @@ import org.learning.studentManagement.dataaccess.GroupDao;
 import org.learning.studentManagement.model.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -116,7 +115,7 @@ public class GroupServiceImp implements GroupService {
     public void delete(String id) throws IllegalArgumentException {
         Group group = findById(Integer.parseInt(id));
 
-        if(!group.getStudents().isEmpty()) {
+        if (!group.getStudents().isEmpty()) {
             throw new IllegalArgumentException("The group has member students!");
         }
 

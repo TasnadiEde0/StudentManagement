@@ -258,7 +258,7 @@ public class StudentServiceImp implements StudentService {
         Student student = findById(Integer.parseInt(id));
 
         //detach courses from student
-        for(Course course : student.getCourses()) {
+        for (Course course : student.getCourses()) {
             course.getStudents().remove(student);
             entityManager.persist(course);
         }
@@ -275,7 +275,6 @@ public class StudentServiceImp implements StudentService {
      * @param imgName Name of the profile picture
      * @return Profile picture as a {@code Resource}
      * @throws FileNotFoundException If the image doesn't exist
-     * @throws MalformedURLException
      */
     @Override
     public Resource serveImg(String imgName) throws MalformedURLException, FileNotFoundException {
