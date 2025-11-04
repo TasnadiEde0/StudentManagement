@@ -39,8 +39,11 @@ public class GroupServiceImp implements GroupService {
      */
     @Override
     public Group findById(int Id) throws IllegalArgumentException {
-        return groupDao.findById(Id).orElseThrow(() ->
+        Group group = groupDao.findById(Id).orElseThrow(() ->
                 new IllegalArgumentException("The given ID isn't associated with a group!"));
+        log.info("Group with ID {} retrieved: {}", group.getId(), group);
+
+        return group;
 
     }
 
@@ -52,7 +55,10 @@ public class GroupServiceImp implements GroupService {
      */
     @Override
     public Optional<Group> findByName(String name) {
-        return groupDao.findByName(name);
+        Optional<Group> group = groupDao.findByName(name);
+        group.ifPresent(value -> log.info("Group with name {} found: {}", name, value));
+
+        return group;
     }
 
     /**
@@ -62,7 +68,10 @@ public class GroupServiceImp implements GroupService {
      */
     @Override
     public List<Group> findAll() {
-        return groupDao.findAll();
+        List<Group> groups = groupDao.findAll();
+        log.info("Groups retrieved: {}", groups);
+
+        return groups;
     }
 
     /**
@@ -80,6 +89,9 @@ public class GroupServiceImp implements GroupService {
         groupDuplicateCheck(name);
 
         group.setName(name);
+
+        log.info("Group saved: {}", group);
+
         return groupDao.save(group);
     }
 
@@ -102,6 +114,8 @@ public class GroupServiceImp implements GroupService {
         }
 
         groupDao.update(group);
+
+        log.info("Group updated: {}", group);
     }
 
     /**
@@ -120,5 +134,8 @@ public class GroupServiceImp implements GroupService {
         }
 
         groupDao.delete(group);
+
+        log.info("Group deleted: {}", group);
+
     }
 }

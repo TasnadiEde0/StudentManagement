@@ -98,8 +98,11 @@ public class StudentServiceImp implements StudentService {
      */
     @Override
     public Student findById(int Id) throws IllegalArgumentException {
-        return studentDao.findById(Id).orElseThrow(() ->
+        Student student = studentDao.findById(Id).orElseThrow(() ->
                 new IllegalArgumentException("The given ID isn't associated with a student!"));
+        log.info("Student with ID {} retrieved: {}", student.getId(), student);
+
+        return student;
 
     }
 
@@ -111,7 +114,10 @@ public class StudentServiceImp implements StudentService {
      */
     @Override
     public Optional<Student> findByCnp(String cnp) {
-        return studentDao.findByCnp(cnp);
+        Optional<Student> student = studentDao.findByCnp(cnp);
+        student.ifPresent(value -> log.info("Student with CNP {} retrieved: {}", value.getCnp(), value));
+
+        return student;
     }
 
     /**
@@ -122,7 +128,10 @@ public class StudentServiceImp implements StudentService {
      */
     @Override
     public Optional<Student> findByEmail(String email) {
-        return studentDao.findByEmail(email);
+        Optional<Student> student = studentDao.findByEmail(email);
+        student.ifPresent(value -> log.info("Student with Email {} retrieved: {}", value.getEmail(), value));
+
+        return student;
     }
 
     /**
@@ -132,7 +141,10 @@ public class StudentServiceImp implements StudentService {
      */
     @Override
     public List<Student> findAll() {
-        return studentDao.findAll();
+        List<Student> students = studentDao.findAll();
+        log.info("Students retrieved: {}", students);
+
+        return students;
     }
 
     /**
@@ -186,6 +198,8 @@ public class StudentServiceImp implements StudentService {
 
         groupDao.save(group);
         studentDao.update(student);
+
+        log.info("Student saved: {}", student);
 
         return student;
 
@@ -244,6 +258,8 @@ public class StudentServiceImp implements StudentService {
 
         studentDao.update(student);
 
+        log.info("Student updated: {}", student);
+
     }
 
     /**
@@ -267,6 +283,8 @@ public class StudentServiceImp implements StudentService {
 
         studentDao.delete(student);
 
+        log.info("Student deleted: {}", student);
+
     }
 
     /**
@@ -283,6 +301,8 @@ public class StudentServiceImp implements StudentService {
         if (Files.notExists(path)) {
             throw new FileNotFoundException(imgName);
         }
+
+        log.info("Image served: {}", imgName);
 
         return new UrlResource(path.toUri());
     }
@@ -308,6 +328,8 @@ public class StudentServiceImp implements StudentService {
 
             entityManager.persist(course);
             entityManager.persist(student);
+
+            log.info("{} added to {}", student, course);
 
         } else {
             throw new IllegalArgumentException("The student is already in this course!");
@@ -335,6 +357,8 @@ public class StudentServiceImp implements StudentService {
 
             entityManager.persist(course);
             entityManager.persist(student);
+
+            log.info("{} removed from {}", student, course);
 
         } else {
             throw new IllegalArgumentException("The student is not in this course!");

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -48,5 +49,16 @@ public class Student extends BaseObject {
     )
 //    @OnDelete(action = OnDeleteAction.SET_NULL)
     private List<Course> courses;
+
+    @Override
+    public String toString() {
+        String courseList = "";
+        if (courses != null) {
+            courseList = courses.stream().map(course ->
+                    course.getName()).collect(Collectors.joining(", "));
+        }
+        return "Student(firstName=" + firstName + ", lastName=" + lastName + ", cnp=" + cnp + ", email=" + email +
+                ", imgName=" + imgName + ", group=" + group.getName() + ", courses=[" + courseList + "])";
+    }
 
 }

@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,5 +28,15 @@ public class Group extends BaseObject {
 
     public Group(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        String studentList = "[]";
+        if (students != null) {
+            studentList = students.stream().map(student -> student.getFirstName() + " " +
+                    student.getLastName()).collect(Collectors.joining(", "));
+        }
+        return "Group(name=" + name + ", students=" + studentList + ")";
     }
 }

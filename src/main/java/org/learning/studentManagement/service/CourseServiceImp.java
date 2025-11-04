@@ -2,6 +2,7 @@ package org.learning.studentManagement.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.dataaccess.CourseDao;
 import org.learning.studentManagement.dataaccess.StudentDao;
 import org.learning.studentManagement.model.Course;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class CourseServiceImp implements CourseService {
     @Autowired
@@ -41,8 +43,11 @@ public class CourseServiceImp implements CourseService {
      */
     @Override
     public Course findById(int id) throws IllegalArgumentException {
-        return courseDao.findById(id).orElseThrow(() ->
+        Course course = courseDao.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("The given ID isn't associated with a course!"));
+        log.info("Course with ID {} retrieved: {}", course.getId(), course);
+
+        return course;
 
     }
 
@@ -54,7 +59,10 @@ public class CourseServiceImp implements CourseService {
      */
     @Override
     public Optional<Course> findByName(String name) {
-        return courseDao.findByName(name);
+        Optional<Course> course = courseDao.findByName(name);
+        course.ifPresent(value -> log.info("Course with name {} retrieved: {}", name, value));
+
+        return course;
     }
 
     /**
@@ -64,7 +72,10 @@ public class CourseServiceImp implements CourseService {
      */
     @Override
     public List<Course> findAll() {
-        return courseDao.findAll();
+        List<Course> courses = courseDao.findAll();
+        log.info("Courses retrieved: {}", courses);
+
+        return courses;
     }
 
     /**
@@ -103,6 +114,8 @@ public class CourseServiceImp implements CourseService {
         course.setStartDate(startDate);
         course.setEndDate(endDate);
 
+        log.info("Course saved: {}", course);
+
         return courseDao.save(course);
     }
 
@@ -134,6 +147,8 @@ public class CourseServiceImp implements CourseService {
             throw new IllegalArgumentException("The given start date is after the given end date!");
         }
 
+        log.info("Course updated: {}", course);
+
         courseDao.update(course);
 
     }
@@ -159,6 +174,8 @@ public class CourseServiceImp implements CourseService {
 
         courseDao.delete(course);
 
+        log.info("Course deleted: {}", course);
+
     }
 
     /**
@@ -183,6 +200,8 @@ public class CourseServiceImp implements CourseService {
 
             entityManager.persist(course);
             entityManager.persist(student);
+
+            log.info("{} added to {}", student, course);
 
         } else {
             throw new IllegalArgumentException("The given student is part of the course!");
@@ -212,6 +231,8 @@ public class CourseServiceImp implements CourseService {
 
             entityManager.persist(course);
             entityManager.persist(student);
+
+            log.info("{} removed from {}", student, course);
 
         } else {
             throw new IllegalArgumentException("The given student isn't part of the course!");

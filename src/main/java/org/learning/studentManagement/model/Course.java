@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -36,5 +37,16 @@ public class Course extends BaseObject {
     @ManyToMany(mappedBy = "courses")
 //    @OnDelete(action = OnDeleteAction.SET_NULL)
     private List<Student> students;
+
+    @Override
+    public String toString() {
+        String studentList = "";
+        if (students != null) {
+            studentList = students.stream().map(student -> student.getFirstName() + " " +
+                    student.getLastName()).collect(Collectors.joining(", "));
+        }
+        return "Course(name=" + name + ", startDate=" + startDate + ", endDate=" +
+                endDate + ", students=" + studentList + ")";
+    }
 
 }
