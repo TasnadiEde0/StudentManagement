@@ -25,8 +25,10 @@ public class ExceptionHandlerController {
     public String handleIllegalArgumentException(Model model, IllegalArgumentException ex) {
         if (ex instanceof NumberFormatException) {
             model.addAttribute("errorMsg", "Not a vaild ID: " + ex.getMessage().substring(17));
+            log.error("Incorrect ID: {}", ex.getMessage().substring(17));
         } else {
             model.addAttribute("errorMsg", ex.getMessage());
+            log.error("Incorrect input: {}", ex.getMessage());
         }
 
         return "error";
@@ -42,6 +44,7 @@ public class ExceptionHandlerController {
         String violations = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate)
                 .collect(Collectors.joining(", "));
         model.addAttribute("errorMsg", violations);
+        log.error("Incorrect input: {}", ex.getMessage());
 
         return "error";
     }
