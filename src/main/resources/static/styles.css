@@ -4,7 +4,16 @@ table, th, td {
     padding: 5px;
 }
 
-.center {
-  margin: auto;
-  width: 50%;
+.login, .register {
+    margin: auto;
+    width: 50%;
+    width: fit-content;
+}
+
+body {
+    padding: 15px;
+}
+
+h1, h2 {
+    padding-top: 15px;
 }

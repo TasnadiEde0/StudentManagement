@@ -35,6 +35,7 @@ public class SecurityConfigs {
                                         .requestMatchers("/login").permitAll()
                                         .requestMatchers("/logout").permitAll()
                                         .requestMatchers("/register").permitAll()
+                                        .requestMatchers("/styles.css").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception ->
