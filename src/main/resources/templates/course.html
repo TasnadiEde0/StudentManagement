@@ -22,24 +22,27 @@
     <p th:text="@{Starting Date: __${course.startDate}__}"></p>
     <p th:text="@{Ending Date: __${course.endDate}__}"></p>
 
-    <table>
-        <tr>
-            <th>Student ID</th>
-            <th>Student First Name</th>
-            <th>Student Last Name</th>
-            <th></th>
-        </tr>
-        <tr th:each="student : ${course.students}">
-            <td th:text="${student.id}"></td>
-            <td th:text="${student.firstName}"></td>
-            <td th:text="${student.lastName}"></td>
-            <td>
-                <form th:action="@{/course/removeStudent?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
-                    <input type="submit" value="Remove">
-                </form>
-            </td>
-        </tr>
-    </table>
+    <details>
+        <summary>List of attending students</summary>
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>Student First Name</th>
+                <th>Student Last Name</th>
+                <th></th>
+            </tr>
+            <tr th:each="student : ${course.students}">
+                <td th:text="${student.id}"></td>
+                <td th:text="${student.firstName}"></td>
+                <td th:text="${student.lastName}"></td>
+                <td>
+                    <form th:action="@{/course/removeStudent?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
+                        <input type="submit" value="Remove">
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </details>
 
 </div>
 
