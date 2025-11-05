@@ -28,6 +28,7 @@ public class GroupServiceTests {
         Group group = new Group();
         group.setId(1);
         group.setName("groupName");
+        group.setStudents(new ArrayList<>());
 
         return group;
     }

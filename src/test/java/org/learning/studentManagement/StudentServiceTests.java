@@ -8,6 +8,7 @@ import org.learning.studentManagement.dataaccess.StudentDao;
 import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.learning.studentManagement.model.dto.StudentDto;
 import org.learning.studentManagement.service.CourseService;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
@@ -57,22 +58,22 @@ public class StudentServiceTests {
         student.setCnp("1234567890123");
         student.setImgName("1234567890123.png");
 
-        if (addGroup) {
+//        if (addGroup) {
             Group group = new Group();
             group.setId(1);
             group.setName("groupName");
             group.setStudents(new ArrayList<>(List.of(student)));
             student.setGroup(group);
-        }
+//        }
 
+        student.setCourses(new ArrayList<>());
         if (addCourse) {
             Course course = new Course();
             course.setId(1);
             course.setName("courseName");
             course.setStartDate(LocalDate.parse("2025-01-01"));
             course.setEndDate(LocalDate.parse("2025-02-01"));
-//            course.setStudents(new ArrayList<>(List.of(student)));
-            student.setCourses(new ArrayList<>(List.of(course)));
+            course.getStudents().add(student);
         }
 
         return student;
@@ -177,8 +178,8 @@ public class StudentServiceTests {
         when(groupDao.findByName("groupName")).thenReturn(Optional.empty());
 
         //execute
-        Student savedStudent = studentService.save("firstName", "lastName",
-                "email@email.email", "1234567890123", "groupName", mockFile);
+        Student savedStudent = studentService.save(new StudentDto(null, "firstName", "lastName",
+                "1234567890123", "email@email.email", null, "groupName", null, mockFile));
 
         assertEquals(0, savedStudent.getId());
         assertEquals("firstName", savedStudent.getFirstName());
@@ -203,8 +204,8 @@ public class StudentServiceTests {
 
         //execute
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                studentService.save("firstName","lastName","email@email.email",
-                        "1234567890123", "groupName", mockFile));
+                studentService.save(new StudentDto(null, "firstName", "lastName", "1234567890123",
+                        "email@email.email", null, "groupName", null, mockFile)));
         assertEquals("No picture has been uploaded!", exception.getMessage());
         verify(studentDao, never()).save(any(Student.class));
         verify(studentDao, never()).update(any(Student.class));
@@ -220,7 +221,7 @@ public class StudentServiceTests {
         //setup
         MockMultipartFile mockFile = new MockMultipartFile("profilePic", "red.png",
                 "multipart/form-data", "upload/imgs/red.png".getBytes());
-        Student student = new Student();
+        Student student = createMockStudent(false, false);
         student.setId(1);
         Group newGroup = new Group();
         newGroup.setId(1);
@@ -233,8 +234,8 @@ public class StudentServiceTests {
         doNothing().when(studentDao).update(any(Student.class));
 
         //execute
-        studentService.update("1", "firstName", "lastName",
-                "email@email.email", "1234567890123", "1", mockFile);
+        studentService.update(new StudentDto("1", "firstName", "lastName",
+                "1234567890123", "email@email.email", null, null, "1", mockFile));
 
         assertEquals(1, student.getId());
         assertEquals("firstName", student.getFirstName());
@@ -266,8 +267,8 @@ public class StudentServiceTests {
 
         //execute
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                studentService.update("1", "firstName", "lastName",
-                        "email@email.email", "1234567890123", "1", mockFile));
+                studentService.update(new StudentDto("1", "firstName", "lastName",
+                        "1234567890123", "email@email.email", null, "1", null, mockFile)));
         assertEquals("Student Email already taken!", exception.getMessage());
         verify(studentDao, times(1)).findById(1);
         verify(studentDao, never()).findByCnp(any());

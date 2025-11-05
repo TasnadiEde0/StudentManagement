@@ -3,6 +3,7 @@ package org.learning.studentManagement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.learning.studentManagement.model.Course;
+import org.learning.studentManagement.model.dto.CourseDto;
 import org.learning.studentManagement.service.CourseService;
 import org.learning.studentManagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +61,9 @@ public class CourseControllerTests {
     @WithMockUser(username = "admin", password = "admin")
     void addCourse_isOk() throws Exception {
         //setup
-        when(courseService.save("courseName", LocalDate.parse("2025-01-01"),
-                LocalDate.parse("2025-12-31"))).thenReturn(new Course());
+        CourseDto courseDto = new CourseDto(null, "courseName", LocalDate.parse("2025-01-01"),
+                LocalDate.parse("2025-12-31"));
+        when(courseService.save(courseDto)).thenReturn(new Course());
 
         //execution
         mockMvc.perform(post("/course/add")
@@ -72,8 +74,7 @@ public class CourseControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course"))
                 .andDo(print());
-        verify(courseService, times(1)).save("courseName",
-                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-12-31"));
+        verify(courseService, times(1)).save(courseDto);
 
         //cleanup
     }
@@ -82,8 +83,9 @@ public class CourseControllerTests {
     @WithMockUser(username = "admin", password = "admin")
     void addCourse_endDateAfterStartDate_is4xx() throws Exception {
         //setup
-        doThrow(IllegalArgumentException.class).when(courseService).save("courseName",
+        CourseDto courseDto = new CourseDto(null, "courseName",
                 LocalDate.parse("2025-12-31"), LocalDate.parse("2025-01-01"));
+        doThrow(IllegalArgumentException.class).when(courseService).save(courseDto);
 
         //execution
         mockMvc.perform(post("/course/add")
@@ -94,8 +96,7 @@ public class CourseControllerTests {
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"))
                 .andDo(print());
-        verify(courseService, times(1)).save("courseName",
-                LocalDate.parse("2025-12-31"), LocalDate.parse("2025-01-01"));
+        verify(courseService, times(1)).save(courseDto);
 
         //cleanup
     }
@@ -139,8 +140,9 @@ public class CourseControllerTests {
     @WithMockUser(username = "admin", password = "admin")
     void alterCourse_isOk() throws Exception {
         //setup
-        doNothing().when(courseService).update(1, "courseName", LocalDate.parse("2025-01-01"),
+        CourseDto courseDto = new CourseDto("1", "courseName", LocalDate.parse("2025-01-01"),
                 LocalDate.parse("2025-12-31"));
+        doNothing().when(courseService).update(courseDto);
 
         //execution
         mockMvc.perform(post("/course/alter")
@@ -152,8 +154,7 @@ public class CourseControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course"))
                 .andDo(print());
-        verify(courseService, times(1)).update(1, "courseName",
-                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-12-31"));
+        verify(courseService, times(1)).update(courseDto);
 
         //cleanup
     }
@@ -162,8 +163,9 @@ public class CourseControllerTests {
     @WithMockUser(username = "admin", password = "admin")
     void alterCourse_newEndDateBeforeStartDate_is4xx() throws Exception {
         //setup
-        doThrow(IllegalArgumentException.class).when(courseService).update(1, null, null,
+        CourseDto courseDto = new CourseDto("1", null, null,
                 LocalDate.parse("2024-12-31"));
+        doThrow(IllegalArgumentException.class).when(courseService).update(courseDto);
 
         //execution
         mockMvc.perform(post("/course/alter")
@@ -172,8 +174,7 @@ public class CourseControllerTests {
                 )
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("error"));
-        verify(courseService, times(1)).update(1, null, null,
-                LocalDate.parse("2024-12-31"));
+        verify(courseService, times(1)).update(courseDto);
 
         //cleanup
     }

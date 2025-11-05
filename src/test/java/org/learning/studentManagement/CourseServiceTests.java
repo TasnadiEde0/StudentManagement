@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.learning.studentManagement.dataaccess.CourseDao;
 import org.learning.studentManagement.dataaccess.StudentDao;
 import org.learning.studentManagement.model.Course;
+import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.learning.studentManagement.model.dto.CourseDto;
 import org.learning.studentManagement.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -105,8 +107,8 @@ public class CourseServiceTests {
         when(courseDao.findByName("courseName")).thenReturn(Optional.empty());
 
         //execute
-        Course course = courseService.save("courseName",
-                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01"));
+        Course course = courseService.save(new CourseDto(null, "courseName",
+                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01")));
         assertEquals("courseName", course.getName());
         assertEquals(LocalDate.parse("2025-01-01"), course.getStartDate());
         assertEquals(LocalDate.parse("2025-02-01"), course.getEndDate());
@@ -123,7 +125,7 @@ public class CourseServiceTests {
 
         //execute
         Exception exception = assertThrows(IllegalArgumentException.class, () -> courseService.save(
-                "courseName", LocalDate.parse("2025-02-01"), LocalDate.parse("2025-01-01")));
+                new CourseDto(null, "courseName", LocalDate.parse("2025-02-01"), LocalDate.parse("2025-01-01"))));
         assertEquals("The given start date is after the given end date!", exception.getMessage());
         verify(courseDao, times(1)).findByName("courseName");
         verify(courseDao, never()).save(any(Course.class));
@@ -139,8 +141,8 @@ public class CourseServiceTests {
         doNothing().when(courseDao).update(any(Course.class));
 
         //execute
-        courseService.update(1, "courseName",
-                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01"));
+        courseService.update(new CourseDto("1", "courseName",
+                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01")));
         assertEquals("courseName", course.getName());
         assertEquals(LocalDate.parse("2025-01-01"), course.getStartDate());
         assertEquals(LocalDate.parse("2025-02-01"), course.getEndDate());
@@ -157,8 +159,8 @@ public class CourseServiceTests {
         when(courseDao.findById(1)).thenReturn(Optional.of(course));
 
         //execute
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> courseService.update(1,
-                "courseName", null, LocalDate.parse("2024-02-01")));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> courseService.update(new CourseDto("1",
+                "courseName", null, LocalDate.parse("2024-02-01"))));
         assertEquals("The given start date is after the given end date!", exception.getMessage());
         verify(courseDao, times(1)).findById(1);
         verify(courseDao, never()).update(any(Course.class));
@@ -204,6 +206,14 @@ public class CourseServiceTests {
         student.setEmail("email@email.email");
         student.setCnp("1234567890123");
         student.setImgName("1234567890123.png");
+
+        Group group = new Group();
+        group.setId(1);
+        group.setName("groupName");
+        group.setStudents(new ArrayList<>(List.of(student)));
+        student.setGroup(group);
+
+        student.setCourses(new ArrayList<>());
 
         Course course = new Course();
         course.setId(1);

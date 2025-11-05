@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.learning.studentManagement.model.dto.CourseDto;
+import org.learning.studentManagement.model.dto.StudentDto;
 import org.learning.studentManagement.service.CourseService;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
@@ -79,12 +81,14 @@ public class StudentControllerTests {
     @WithMockUser(username = "user", password = "user")
     void studentPage_noFilters_isOk() throws Exception {
         //setup
-        when(studentService.findAll()).thenReturn(new ArrayList<>());
+        when(studentService.count()).thenReturn(1);
+        when(studentService.findAllFiltered(null, "id", 1)).thenReturn(new ArrayList<>(List.of(createMockStudent())));
 
         //execution
         mockMvc.perform(get("/student"))
                 .andExpect(status().isOk()).andExpect(view().name("student"));
-        verify(studentService, times(1)).findAll();
+        verify(studentService, times(1)).count();
+        verify(studentService, times(1)).findAllFiltered(null, "id", 1);
 
         //cleanup
     }
@@ -93,12 +97,16 @@ public class StudentControllerTests {
     @WithMockUser(username = "user", password = "user")
     void studentPage_withFilters_isOk() throws Exception {
         //setup
-        when(studentService.findAll()).thenReturn(new ArrayList<>());
+        Group group = new Group();
+        when(studentService.count()).thenReturn(1);
+        when(groupService.findById(0)).thenReturn(group);
+        when(studentService.findAllFiltered(group, "firstName", 1)).thenReturn(new ArrayList<>(List.of(createMockStudent())));
 
 
         mockMvc.perform(get("/student?sortBy=firstName&pageNum=1&selectedGroup=0"))
                 .andExpect(status().isOk()).andExpect(view().name("student"));
-        verify(studentService, times(1)).findAll();
+        verify(studentService, times(1)).count();
+        when(studentService.findAllFiltered(group, "firstName", 1)).thenReturn(new ArrayList<>(List.of(createMockStudent())));
 
         //cleanup
     }
@@ -138,8 +146,9 @@ public class StudentControllerTests {
         //setup
         MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
                 "multipart/form-data", "upload/imgs/red.png".getBytes());
-        when(studentService.save("firstName", "lastName", "email@email.email",
-                "1234512345123", "groupName", file)).thenReturn(new Student());
+        StudentDto studentDto = new StudentDto(null, "firstName", "lastName", "1234512345123",
+                "email@email.email", null, "groupName", null, file);
+        when(studentService.save(studentDto)).thenReturn(new Student());
 
         //execution
         mockMvc.perform(multipart("/student/add")
@@ -153,8 +162,7 @@ public class StudentControllerTests {
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/student"))
         .andDo(print());
-        verify(studentService, times(1)).save("firstName", "lastName",
-                "email@email.email", "1234512345123", "groupName", file);
+        verify(studentService, times(1)).save(studentDto);
 
         //cleanup
     }
@@ -163,6 +171,7 @@ public class StudentControllerTests {
     @WithMockUser(username = "admin", password = "admin")
     void addStudent_fileMissing_is4xx() throws Exception {
         //setup
+        doThrow(IllegalArgumentException.class).when(studentService).save(any());
 
         //execution
         mockMvc.perform(multipart("/student/add")
@@ -174,7 +183,7 @@ public class StudentControllerTests {
                 )
                 .andExpect(status().is4xxClientError())
                 .andDo(print());
-        verify(studentService, never()).save(any(), any(), any(), any(), any(), any());
+        verify(studentService, times(1)).save(any());
 
         //cleanup
     }
@@ -221,8 +230,9 @@ public class StudentControllerTests {
         //setup
         MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
                 "multipart/form-data", "upload/imgs/red.png".getBytes());
-        doNothing().when(studentService).update("1", "firstName", "lastName",
-                "email@email.email", "1234512345123", "groupId", file);
+        StudentDto studentDto = new StudentDto("1", "firstName", "lastName",
+                "1234512345123", "email@email.email", null, null, "groupId", file);
+        doNothing().when(studentService).update(studentDto);
 
         //execution
         mockMvc.perform(multipart("/student/alter")
@@ -232,13 +242,12 @@ public class StudentControllerTests {
                         .param("lastName", "lastName")
                         .param("email", "email@email.email")
                         .param("cnp", "1234512345123")
-                        .param("groupid", "groupId")
+                        .param("groupId", "groupId")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"))
                 .andDo(print());
-        verify(studentService, times(1)).update("1", "firstName",
-                "lastName", "email@email.email", "1234512345123", "groupId", file);
+        verify(studentService, times(1)).update(studentDto);
 
         //cleanup
     }
@@ -247,8 +256,10 @@ public class StudentControllerTests {
     @WithMockUser(username = "admin", password = "admin")
     void alterStudent_duplicateCnp_is4xxx() throws Exception {
         //setup
-        doThrow(IllegalArgumentException.class).when(studentService).update("1", "", "",
-                "", "1234512345123", "", null);
+        StudentDto studentDto = new StudentDto("1", null, null,
+                "1234512345123", null, null, null, null, null);
+
+        doThrow(IllegalArgumentException.class).when(studentService).update(studentDto);
 
         //execution
         mockMvc.perform(multipart("/student/alter")
@@ -257,8 +268,7 @@ public class StudentControllerTests {
                 )
                 .andExpect(status().is4xxClientError())
                 .andDo(print());
-        verify(studentService, times(1)).update("1", "", "",
-                "", "1234512345123", "", null);
+        verify(studentService, times(1)).update(studentDto);
 
         //cleanup
     }
