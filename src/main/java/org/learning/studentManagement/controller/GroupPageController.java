@@ -55,7 +55,7 @@ public class GroupPageController {
     ) {
         groupService.delete(id);
 
-        return new RedirectView("/group"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/group");
 
     }
 
@@ -67,7 +67,7 @@ public class GroupPageController {
     ) {
         groupService.update(id, name);
 
-        return new RedirectView("/group"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/group");
 
     }
 

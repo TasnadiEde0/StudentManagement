@@ -7,6 +7,7 @@ import org.learning.studentManagement.dataaccess.CourseDao;
 import org.learning.studentManagement.dataaccess.StudentDao;
 import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.model.Student;
+import org.learning.studentManagement.model.dto.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,9 +82,7 @@ public class CourseServiceImp implements CourseService {
     /**
      * Create and save a Course with the given properties
      *
-     * @param name      New Course name
-     * @param startDate Staring date of the Course
-     * @param endDate   Ending date of the Course
+     * @param courseDto The data of a student
      * @return Saved Course
      * @throws IllegalArgumentException If the {@code startDate} is
      *                                  after the {@code endDate} or {@code name} isn't unique
@@ -91,28 +90,26 @@ public class CourseServiceImp implements CourseService {
     @Override
     @Transactional
     public Course save(
-            String name,
-            LocalDate startDate,
-            LocalDate endDate
+            CourseDto courseDto
     ) throws IllegalArgumentException {
         Course course = new Course();
 
-        courseDuplicateCheck(name);
-        course.setName(name);
+        courseDuplicateCheck(courseDto.getName());
+        course.setName(courseDto.getName());
 
-        if (startDate == null) {
+        if (courseDto.getStartDate() == null) {
             throw new IllegalArgumentException("Starting Date can't be null");
         }
-        if (endDate == null) {
+        if (courseDto.getEndDate() == null) {
             throw new IllegalArgumentException("Ending Date can't be null");
         }
 
-        if (startDate.isAfter(endDate)) {
+        if (courseDto.getStartDate().isAfter(courseDto.getEndDate())) {
             throw new IllegalArgumentException("The given start date is after the given end date!");
         }
 
-        course.setStartDate(startDate);
-        course.setEndDate(endDate);
+        course.setStartDate(courseDto.getStartDate());
+        course.setEndDate(courseDto.getEndDate());
 
         log.info("Course saved: {}", course);
 
@@ -122,25 +119,22 @@ public class CourseServiceImp implements CourseService {
     /**
      * Update the Course with the provided values
      *
-     * @param id        Id of the Course to be modified. Must belong to a Course
-     * @param name      New name of the Course or {@code null}
-     * @param startDate New staring date or {@code null}
-     * @param endDate   New ending date or {@code null}
+     * @param courseDto The data of a student
      * @throws IllegalArgumentException If the id belongs to no Course or the {@code startDate} is after the {@code endDate}
      */
     @Override
     @Transactional
-    public void update(Integer id, String name, LocalDate startDate, LocalDate endDate) throws IllegalArgumentException {
-        Course course = findById(id);
+    public void update(CourseDto courseDto) throws IllegalArgumentException {
+        Course course = findById(Integer.parseInt(courseDto.getId()));
 
-        if (name != null && !name.isEmpty()) {
-            course.setName(name);
+        if (courseDto.getName() != null && !courseDto.getName().isEmpty()) {
+            course.setName(courseDto.getName());
         }
-        if (startDate != null) {
-            course.setStartDate(startDate);
+        if (courseDto.getStartDate() != null) {
+            course.setStartDate(courseDto.getStartDate());
         }
-        if (endDate != null) {
-            course.setEndDate(endDate);
+        if (courseDto.getEndDate() != null) {
+            course.setEndDate(courseDto.getEndDate());
         }
 
         if (course.getStartDate().isAfter(course.getEndDate())) {

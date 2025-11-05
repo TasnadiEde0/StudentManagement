@@ -2,6 +2,7 @@ package org.learning.studentManagement.service;
 
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.learning.studentManagement.model.dto.StudentDto;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,9 +28,9 @@ public interface StudentService {
 
     int countByGroup(Group group);
 
-    Student save(String firstName, String lastName, String email, String cnp, String groupName, MultipartFile file) throws IOException;
+    Student save(StudentDto studentDto) throws IOException;
 
-    void update(String id, String firstName, String lastName, String email, String cnp, String groupId, MultipartFile file) throws IOException;
+    void update(StudentDto studentDto) throws IOException;
 
     void delete(String id);
 

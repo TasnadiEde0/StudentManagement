@@ -137,8 +137,8 @@
         <input type="text" name="cnp" id="cnpAlter">
         <br>
 
-        <label for="groupidAlter">Group</label>
-        <select name="groupid" id="groupidAlter">
+        <label for="groupIdAlter">Group</label>
+        <select name="groupId" id="groupIdAlter">
             <option></option>
             <option th:each="group : ${groups}" th:text="${group.name}" th:value="${group.id}"></option>
         </select>

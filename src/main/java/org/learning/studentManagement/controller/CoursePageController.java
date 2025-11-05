@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.model.Course;
+import org.learning.studentManagement.model.dto.CourseDto;
 import org.learning.studentManagement.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,12 +38,10 @@ public class CoursePageController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/course/add")
     public RedirectView addCourse(
-            @RequestParam("name") String name,
-            @Nullable @RequestParam("startDate") LocalDate startDate,
-            @Nullable @RequestParam("endDate") LocalDate endDate
+            CourseDto courseDto
     ) {
 
-        courseService.save(name, startDate, endDate);
+        courseService.save(courseDto);
 
         return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
@@ -56,21 +55,18 @@ public class CoursePageController {
 
         courseService.delete(Integer.parseInt(id));
 
-        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/course");
 
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/course/alter")
     public RedirectView alterCourse(
-            @RequestParam(value = "id") String id,
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "startDate", required = false) LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) LocalDate endDate
+            CourseDto courseDto
     ) {
-        courseService.update(Integer.valueOf(id), name, startDate, endDate);
+        courseService.update(courseDto);
 
-        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/course");
 
     }
 
@@ -82,7 +78,7 @@ public class CoursePageController {
     ) {
         courseService.removeStudent(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/course");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -93,7 +89,7 @@ public class CoursePageController {
     ) {
         courseService.addStudent(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/course"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/course");
     }
 
 }

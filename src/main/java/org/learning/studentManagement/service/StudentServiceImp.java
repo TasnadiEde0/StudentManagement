@@ -9,13 +9,13 @@ import org.learning.studentManagement.dataaccess.StudentDao;
 import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.learning.studentManagement.model.dto.StudentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.OffsetScrollPosition;
 import org.springframework.data.domain.ScrollPosition;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -190,12 +190,7 @@ public class StudentServiceImp implements StudentService {
     /**
      * Create and save a Student with the given properties
      *
-     * @param firstName First name of the new Student
-     * @param lastName  Last name of the new Student
-     * @param email     Email of the new Student
-     * @param cnp       CNP of the new Student
-     * @param groupName Name of the Group the new Student will belong to
-     * @param file      Profile picture of the new Student
+     * @param studentDto The data of a student
      * @return Saved Student
      * @throws IllegalArgumentException If no picture has been uploaded or if the {@code email} or {@code cnp} is not unique
      * @throws IOException              In case of access errors for the {@code file}
@@ -203,36 +198,31 @@ public class StudentServiceImp implements StudentService {
     @Override
     @Transactional
     public Student save(
-            String firstName,
-            String lastName,
-            String email,
-            String cnp,
-            String groupName,
-            MultipartFile file
+            StudentDto studentDto
     ) throws IllegalArgumentException, IOException {
 
         Student student = new Student();
 
-        if (file.isEmpty()) {
+        if (studentDto.getProfilePic().isEmpty()) {
             throw new IllegalArgumentException("No picture has been uploaded!");
         }
 
-        Path imgPath = Paths.get(UPLOAD_DIRECTORY, cnp + ".png");
-        Files.write(imgPath, file.getBytes());
-        student.setImgName(cnp + ".png");
+        Path imgPath = Paths.get(UPLOAD_DIRECTORY, studentDto.getCnp() + ".png");
+        Files.write(imgPath, studentDto.getProfilePic().getBytes());
+        student.setImgName(studentDto.getCnp() + ".png");
 
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
+        student.setFirstName(studentDto.getFirstName());
+        student.setLastName(studentDto.getLastName());
 
-        emailDuplicateCheck(email);
-        student.setEmail(email);
+        emailDuplicateCheck(studentDto.getEmail());
+        student.setEmail(studentDto.getEmail());
 
-        cnpDuplicateCheck(cnp);
-        student.setCnp(cnp);
+        cnpDuplicateCheck(studentDto.getCnp());
+        student.setCnp(studentDto.getCnp());
 
         studentDao.save(student);
 
-        Group group = fetchGroup(groupName);
+        Group group = fetchGroup(studentDto.getGroupName());
 
         student.setGroup(group);
 
@@ -248,51 +238,39 @@ public class StudentServiceImp implements StudentService {
     /**
      * Update the Student with the provided values
      *
-     * @param id        Id of the Student to be modified. Must belong to a Student
-     * @param firstName New first name of the Student or null
-     * @param lastName  New last name of the Student or null
-     * @param email     New email of the Student or null
-     * @param cnp       New CNP of the Student or null
-     * @param groupid   Id of the new Group the Student will belong to or null
-     * @param file      New profile picture of the Student or null
+     * @param studentDto The data of a student
      * @throws IllegalArgumentException If the {@code email} or {@code cnp} is not unique
      * @throws IOException              In case of access errors for the {@code file}
      */
     @Override
     @Transactional
     public void update(
-            String id,
-            String firstName,
-            String lastName,
-            String email,
-            String cnp,
-            String groupid,
-            MultipartFile file
+            StudentDto studentDto
     ) throws IOException, IllegalArgumentException {
-        Student student = findById(Integer.parseInt(id));
+        Student student = findById(Integer.parseInt(studentDto.getId()));
 
-        if (firstName != null && !firstName.isEmpty()) {
-            student.setFirstName(firstName);
+        if (studentDto.getFirstName() != null && !studentDto.getFirstName().isEmpty()) {
+            student.setFirstName(studentDto.getFirstName());
         }
-        if (lastName != null && !lastName.isEmpty()) {
-            student.setLastName(lastName);
+        if (studentDto.getLastName() != null && !studentDto.getLastName().isEmpty()) {
+            student.setLastName(studentDto.getLastName());
         }
-        if (email != null && !email.isEmpty()) {
-            emailDuplicateCheck(email);
-            student.setEmail(email);
+        if (studentDto.getEmail() != null && !studentDto.getEmail().isEmpty()) {
+            emailDuplicateCheck(studentDto.getEmail());
+            student.setEmail(studentDto.getEmail());
         }
-        if (cnp != null && !cnp.isEmpty()) {
-            cnpDuplicateCheck(cnp);
-            student.setCnp(cnp);
+        if (studentDto.getCnp() != null && !studentDto.getCnp().isEmpty()) {
+            cnpDuplicateCheck(studentDto.getCnp());
+            student.setCnp(studentDto.getCnp());
         }
-        if (groupid != null && !groupid.isEmpty()) {
-            student.setGroup(groupDao.findById(Integer.parseInt(groupid)).orElseThrow(() ->
+        if (studentDto.getGroupId() != null && !studentDto.getGroupId().isEmpty()) {
+            student.setGroup(groupDao.findById(Integer.parseInt(studentDto.getGroupId())).orElseThrow(() ->
                     new IllegalArgumentException("The given ID isn't associated with a group!")));
         }
 
-        if (!file.isEmpty()) {
+        if (!studentDto.getProfilePic().isEmpty()) {
             Path imgPath = Paths.get(UPLOAD_DIRECTORY, student.getCnp() + ".png");
-            Files.write(imgPath, file.getBytes());
+            Files.write(imgPath, studentDto.getProfilePic().getBytes());
             student.setImgName(student.getCnp() + ".png");
         }
 

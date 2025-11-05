@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.learning.studentManagement.model.dto.StudentDto;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,6 @@ public class StudentPageController {
 
     @Autowired
     private GroupService groupService;
-
 
     @GetMapping("/student")
     public String student(
@@ -87,15 +87,10 @@ public class StudentPageController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/student/add")
     public RedirectView addStudent(
-            @RequestParam(value = "profilePic") MultipartFile file,
-            @RequestParam(value = "firstName") String firstName,
-            @RequestParam(value = "lastName") String lastName,
-            @RequestParam(value = "email") String email,
-            @RequestParam(value = "cnp") String cnp,
-            @RequestParam(value = "groupName") String groupName
+            StudentDto studentDto
     ) throws IOException {
 
-        studentService.save(firstName, lastName, email, cnp, groupName, file);
+        studentService.save(studentDto);
 
         return new RedirectView("/student"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
 
@@ -109,28 +104,21 @@ public class StudentPageController {
 
         studentService.delete(id);
 
-        return new RedirectView("/student"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/student");
 
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/student/alter")
     public RedirectView alterStudent(
-            @RequestParam(value = "profilePic", required = false) MultipartFile file,
-            @RequestParam(value = "id") String id,
-            @RequestParam(value = "firstName", required = false, defaultValue = "") String firstName,
-            @RequestParam(value = "lastName", required = false, defaultValue = "") String lastName,
-            @RequestParam(value = "email", required = false, defaultValue = "") String email,
-            @RequestParam(value = "cnp", required = false, defaultValue = "") String cnp,
-            @RequestParam(value = "groupid", required = false, defaultValue = "") String groupid
+            StudentDto studentDto
     ) throws IOException {
 
-        studentService.update(id, firstName, lastName, email, cnp, groupid, file);
+        studentService.update(studentDto);
 
-        return new RedirectView("/student"); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/student");
 
     }
-
 
     //Dynamically serve the student profile pictures
     @GetMapping("/imgs/{imgName}")
@@ -150,7 +138,7 @@ public class StudentPageController {
     ) {
         studentService.enterCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/student/" + studentId); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/student/" + studentId);
 
     }
 
@@ -162,7 +150,7 @@ public class StudentPageController {
     ) {
         studentService.leaveCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
 
-        return new RedirectView("/student/" + studentId); // Redirecting instead of sending back html to not risk multiple submission in the case of reloads
+        return new RedirectView("/student/" + studentId);
     }
 
 }

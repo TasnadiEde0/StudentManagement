@@ -1,6 +1,7 @@
 package org.learning.studentManagement.service;
 
 import org.learning.studentManagement.model.Course;
+import org.learning.studentManagement.model.dto.CourseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,9 +14,9 @@ public interface CourseService {
 
     List<Course> findAll();
 
-    Course save(String name, LocalDate startDate, LocalDate endDate);
+    Course save(CourseDto courseDto);
 
-    void update(Integer id, String name, LocalDate startDate, LocalDate endDate);
+    void update(CourseDto courseDto);
 
     void delete(Integer id);
 
