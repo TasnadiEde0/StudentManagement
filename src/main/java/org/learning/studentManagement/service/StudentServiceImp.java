@@ -12,6 +12,8 @@ import org.learning.studentManagement.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.OffsetScrollPosition;
+import org.springframework.data.domain.ScrollPosition;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -143,6 +145,44 @@ public class StudentServiceImp implements StudentService {
     public List<Student> findAll() {
         List<Student> students = studentDao.findAll();
         log.info("Students retrieved: {}", students);
+
+        return students;
+    }
+
+    public int count() {
+        return Math.toIntExact(studentDao.count());
+    }
+
+    public int countByGroup(Group group) {
+        return Math.toIntExact(studentDao.countByGroup(group));
+    }
+
+    private OffsetScrollPosition scrollPosition(int page) {
+        if(page == 1) {
+            return ScrollPosition.offset();
+        }
+        return ScrollPosition.offset((page - 1) * 10L - 1);
+    }
+
+    public List<Student> findAllFiltered(Group group, String orderProperty, int page) {
+        List<Student> students;
+        if (group == null) {
+            switch (orderProperty) {
+                case "firstName" -> students = studentDao.findTop10ByOrderByFirstNameAsc(scrollPosition(page));
+                case "lastName" -> students = studentDao.findTop10ByOrderByLastNameAsc(scrollPosition(page));
+                case "email" -> students = studentDao.findTop10ByOrderByEmailAsc(scrollPosition(page));
+                default -> students = studentDao.findTop10ByOrderByIdAsc(scrollPosition(page));
+            }
+        }
+        else {
+            switch (orderProperty) {
+                case "firstName" -> students = studentDao.findTop10ByGroupOrderByFirstNameAsc(group, scrollPosition(page));
+                case "lastName" -> students = studentDao.findTop10ByGroupOrderByLastNameAsc(group, scrollPosition(page));
+                case "email" -> students = studentDao.findTop10ByGroupOrderByEmailAsc(group, scrollPosition(page));
+                default -> students = studentDao.findTop10ByGroupOrderByIdAsc(group, scrollPosition(page));
+            }
+        }
+
 
         return students;
     }

@@ -1,6 +1,7 @@
 package org.learning.studentManagement.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
@@ -8,15 +9,14 @@ import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.OffsetScrollPosition;
+import org.springframework.data.domain.ScrollPosition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -37,40 +37,6 @@ public class StudentPageController {
     @Autowired
     private GroupService groupService;
 
-    /**
-     * @param list            Unformatted list
-     * @param sortBy          Field by which to reorder list
-     * @param pageNum         Selected page
-     * @param selectedGroupId Group by which to filter ({@code null} if none)
-     * @return Formated list
-     */
-    private List<Student> formatList(List<Student> list, String sortBy, Integer pageNum, String selectedGroupId) {
-        switch (sortBy) {
-            case "firstName" -> list.sort(Comparator.comparing(Student::getFirstName));
-            case "lastName" -> list.sort(Comparator.comparing(Student::getLastName));
-            case "email" -> list.sort(Comparator.comparing(Student::getEmail));
-        }
-
-        if (selectedGroupId != null && !selectedGroupId.isEmpty()) {
-            list = list.stream().filter(student ->
-                    student.getGroup().getId() == Integer.parseInt(selectedGroupId)).toList();
-        }
-
-        if (list.isEmpty()) {
-            return list;
-        }
-
-        int pageCount = (int) Math.ceil(list.size() / 10.0);
-
-        if (pageCount < pageNum) {
-            pageNum = pageCount;
-        }
-
-        list = list.subList((pageNum - 1) * 10, Math.min(pageNum * 10, list.size()));
-
-        return list;
-
-    }
 
     @GetMapping("/student")
     public String student(
@@ -80,17 +46,26 @@ public class StudentPageController {
             Model model,
             HttpServletRequest request
     ) {
-        List<Student> students = studentService.findAll();
         List<Group> groups = groupService.findAll();
+        int studentCount = studentService.count();
+        int pageCount = (int) Math.ceil(studentCount / 10.0);
 
-        int totalStudentCount = students.size();
-        int pageCount = (int) Math.ceil(students.size() / 10.0);
-        students = formatList(students, sortBy, Integer.valueOf(pageNum), selectedGroupId);
+        Group selectedGroup = null;
+        if(!selectedGroupId.isEmpty()) {
+            selectedGroup = groupService.findById(Integer.parseInt(selectedGroupId));
+            int studentCountByGroup = studentService.countByGroup(selectedGroup);
+            pageCount = (int) Math.ceil(studentCountByGroup / 10.0);
+            if (Integer.parseInt(pageNum) > pageCount) {
+                pageNum = String.valueOf(pageCount);
+            }
+        }
+
+        List<Student> students = studentService.findAllFiltered(selectedGroup, sortBy, Integer.parseInt(pageNum));
 
         addAuthsAndNameToModel(model);
         model.addAttribute("students", students);
         model.addAttribute("groups", groups);
-        model.addAttribute("totalStudentCount", totalStudentCount);
+        model.addAttribute("totalStudentCount", studentCount);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("currentSortBy", sortBy);
         model.addAttribute("currentPageNum", pageNum);

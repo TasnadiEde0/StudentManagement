@@ -1,11 +1,15 @@
 package org.learning.studentManagement.dataaccess;
 
 import jakarta.transaction.Transactional;
+import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
+import org.springframework.data.domain.OffsetScrollPosition;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface StudentDaoJpa extends StudentDao, JpaRepository<Student, Integer> {
 
@@ -23,5 +27,24 @@ public interface StudentDaoJpa extends StudentDao, JpaRepository<Student, Intege
     @Override
     void update(@Param("student") Student student); // JpaRepository doesn't generate default update method
 
+    long count();
+
+    long countByGroup(Group group);
+
+    List<Student> findTop10ByOrderByFirstNameAsc(OffsetScrollPosition offset);
+
+    List<Student> findTop10ByOrderByLastNameAsc(OffsetScrollPosition offset);
+
+    List<Student> findTop10ByOrderByEmailAsc(OffsetScrollPosition offset);
+
+    List<Student> findTop10ByOrderByIdAsc(OffsetScrollPosition offset);
+
+    List<Student> findTop10ByGroupOrderByFirstNameAsc(Group group, OffsetScrollPosition offset);
+
+    List<Student> findTop10ByGroupOrderByLastNameAsc(Group group, OffsetScrollPosition offset);
+
+    List<Student> findTop10ByGroupOrderByEmailAsc(Group group, OffsetScrollPosition offset);
+
+    List<Student> findTop10ByGroupOrderByIdAsc(Group group, OffsetScrollPosition offset);
 
 }

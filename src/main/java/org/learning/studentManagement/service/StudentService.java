@@ -1,5 +1,6 @@
 package org.learning.studentManagement.service;
 
+import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,10 @@ public interface StudentService {
 
     List<Student> findAll();
 
+    int count();
+
+    int countByGroup(Group group);
+
     Student save(String firstName, String lastName, String email, String cnp, String groupName, MultipartFile file) throws IOException;
 
     void update(String id, String firstName, String lastName, String email, String cnp, String groupId, MultipartFile file) throws IOException;
@@ -33,5 +38,7 @@ public interface StudentService {
     void enterCourse(Integer studentId, Integer courseId);
 
     void leaveCourse(Integer studentId, Integer courseId);
+
+    List<Student> findAllFiltered(Group group, String orderProperty, int page);
 
 }
