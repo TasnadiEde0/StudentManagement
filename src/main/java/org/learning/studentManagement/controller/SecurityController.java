@@ -3,9 +3,12 @@ package org.learning.studentManagement.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class SecurityController {
@@ -45,13 +50,18 @@ public class SecurityController {
     }
 
     @PostMapping("/register")
-    public RedirectView register(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("password2") String password2) {
+    public RedirectView register(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password,
+            @RequestParam("password2") String password2
+    ) {
 
         if (password != null && !password.equals(password2)) {
             throw new IllegalArgumentException("Passwords don't match!");
         }
 
-        UserDetails userDetails = User.withUsername(username).password(passwordEncoder.encode(password)).roles("USER").build();
+        UserDetails userDetails = User.withUsername(username).
+                password(passwordEncoder.encode(password)).roles("USER").build();
 
         userDetailsManager.createUser(userDetails);
 
@@ -63,6 +73,15 @@ public class SecurityController {
         return "login";
     }
 
+    @Value("${learning.auth.turn-off}")
+    Boolean turnOffAuth;
+
+    @Value("${learning.auth.admin-username}")
+    String adminUsername;
+
+    @Value("${learning.auth.admin-password}")
+    String adminPassword;
+
     @PostMapping("/login")
     public RedirectView login(
             @RequestParam("username") String username,
@@ -70,7 +89,22 @@ public class SecurityController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+        if(turnOffAuth) {
+            Authentication authentication = authenticationManager.authenticate(
+                    UsernamePasswordAuthenticationToken.unauthenticated(adminUsername, adminPassword));
+
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            securityContext.setAuthentication(authentication);
+
+            SecurityContextHolder.setContext(securityContext);
+            securityContextRepository.saveContext(securityContext, request, response);
+
+            return new RedirectView("/student");
+
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                UsernamePasswordAuthenticationToken.unauthenticated(username, password);
 
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
