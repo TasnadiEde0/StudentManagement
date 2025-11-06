@@ -73,15 +73,6 @@ public class SecurityController {
         return "login";
     }
 
-    @Value("${learning.auth.turn-off}")
-    Boolean turnOffAuth;
-
-    @Value("${learning.auth.admin-username}")
-    String adminUsername;
-
-    @Value("${learning.auth.admin-password}")
-    String adminPassword;
-
     @PostMapping("/login")
     public RedirectView login(
             @RequestParam("username") String username,
@@ -89,19 +80,6 @@ public class SecurityController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        if(turnOffAuth) {
-            Authentication authentication = authenticationManager.authenticate(
-                    UsernamePasswordAuthenticationToken.unauthenticated(adminUsername, adminPassword));
-
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(authentication);
-
-            SecurityContextHolder.setContext(securityContext);
-            securityContextRepository.saveContext(securityContext, request, response);
-
-            return new RedirectView("/student");
-
-        }
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 UsernamePasswordAuthenticationToken.unauthenticated(username, password);
