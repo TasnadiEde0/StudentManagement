@@ -37,7 +37,7 @@ public class GroupPageController {
         return "group";
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/group/add")
     public RedirectView addGroup(
             @RequestParam(value = "name") String name
@@ -48,7 +48,7 @@ public class GroupPageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/group/delete")
     public RedirectView deleteGroup(
             @RequestParam(value = "id") String id
@@ -59,7 +59,7 @@ public class GroupPageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/group/alter")
     public RedirectView alterGroup(
             @RequestParam(value = "id") String id,

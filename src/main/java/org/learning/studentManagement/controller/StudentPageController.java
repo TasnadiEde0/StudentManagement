@@ -84,7 +84,7 @@ public class StudentPageController {
         return "oneStudent";
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/student/add")
     public RedirectView addStudent(
             StudentDto studentDto
@@ -96,7 +96,7 @@ public class StudentPageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/student/delete")
     public RedirectView deleteStudent(
             @RequestParam(value = "id") String id
@@ -108,7 +108,7 @@ public class StudentPageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/student/alter")
     public RedirectView alterStudent(
             StudentDto studentDto
@@ -121,6 +121,7 @@ public class StudentPageController {
     }
 
     //Dynamically serve the student profile pictures
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/imgs/{imgName}")
     public ResponseEntity<Resource> imgServing(@PathVariable String imgName) throws MalformedURLException, FileNotFoundException {
         Resource resource = studentService.serveImg(imgName);
@@ -130,7 +131,7 @@ public class StudentPageController {
                 .body(resource);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/student/enterCourse")
     public RedirectView enterCourse(
             @RequestParam(value = "studentId") String studentId,
@@ -142,7 +143,7 @@ public class StudentPageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/student/leaveCourse")
     public RedirectView leaveCourse(
             @RequestParam(value = "studentId") String studentId,

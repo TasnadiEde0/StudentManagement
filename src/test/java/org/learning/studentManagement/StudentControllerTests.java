@@ -141,7 +141,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addStudent_isOk() throws Exception {
         //setup
         MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
@@ -168,7 +168,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addStudent_fileMissing_is4xx() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(studentService).save(any());
@@ -189,7 +189,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void deleteStudent_isOk() throws Exception {
         //setup
         doNothing().when(studentService).delete("1");
@@ -207,7 +207,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void deleteStudent_idNotANumber_isOk() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(studentService).delete("NotANumber");
@@ -225,7 +225,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void alterStudent_isOk() throws Exception {
         //setup
         MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
@@ -253,7 +253,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void alterStudent_duplicateCnp_is4xxx() throws Exception {
         //setup
         StudentDto studentDto = new StudentDto("1", null, null,
@@ -274,7 +274,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void enterCourse_isOk() throws Exception {
         //setup
         doNothing().when(studentService).enterCourse(1, 1);
@@ -293,7 +293,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void enterCourse_duplicateConnection_is4xx() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(studentService).enterCourse(1, 1);
@@ -312,7 +312,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin") //TODO
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"}) //TODO
     void leaveCourse_isOk() throws Exception {
         //setup
         doNothing().when(studentService).leaveCourse(1, 1);
@@ -331,7 +331,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void leaveCourse_incorrectCourseId_is4xx() throws Exception { //TODO
         //setup
         doThrow(IllegalArgumentException.class).when(studentService).leaveCourse(1, 1);

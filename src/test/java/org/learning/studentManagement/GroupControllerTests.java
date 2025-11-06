@@ -53,7 +53,7 @@ public class GroupControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addGroup_isOk() throws Exception {
         //setup
         when(groupService.save("groupName")).thenReturn(new Group());
@@ -71,7 +71,7 @@ public class GroupControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addGroup_invalidCharacters_is4xx() throws Exception {
         //setup
         String invalidGroupName = "$^*&*%^";
@@ -90,7 +90,7 @@ public class GroupControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void deleteGroup_isOk() throws Exception {
         //setup
         doNothing().when(groupService).delete("1");
@@ -108,7 +108,7 @@ public class GroupControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", roles={"USER", "ADMIN"})
     void deleteGroup_wrongId_is4xx() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(groupService).delete("0");
@@ -126,7 +126,7 @@ public class GroupControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities={"ROLE_USER", "ROLE_ADMIN"})
     void alterGroup_isOk() throws Exception {
         //setup
         doNothing().when(groupService).update("1", "newGroupName");
@@ -145,7 +145,7 @@ public class GroupControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void alterGroup_duplicateNewName_is4xx() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(groupService).update("0", "groupName");

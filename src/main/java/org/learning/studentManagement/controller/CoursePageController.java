@@ -35,7 +35,7 @@ public class CoursePageController {
         return "course";
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/course/add")
     public RedirectView addCourse(
             CourseDto courseDto
@@ -47,7 +47,7 @@ public class CoursePageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/course/delete")
     public RedirectView deleteCourse(
             @RequestParam("id") String id
@@ -59,7 +59,7 @@ public class CoursePageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/course/alter")
     public RedirectView alterCourse(
             CourseDto courseDto
@@ -70,7 +70,7 @@ public class CoursePageController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/course/removeStudent")
     public RedirectView removeStudent(
             @RequestParam(value = "studentId") String studentId,
@@ -81,7 +81,7 @@ public class CoursePageController {
         return new RedirectView("/course");
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/course/addStudent")
     public RedirectView addStudent(
             @RequestParam(value = "studentId") String studentId,

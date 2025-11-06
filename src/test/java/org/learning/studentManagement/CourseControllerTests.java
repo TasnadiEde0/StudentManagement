@@ -58,7 +58,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addCourse_isOk() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto(null, "courseName", LocalDate.parse("2025-01-01"),
@@ -80,7 +80,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addCourse_endDateAfterStartDate_is4xx() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto(null, "courseName",
@@ -102,7 +102,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void deleteCourse_isOk() throws Exception {
         //setup
         doNothing().when(studentService).delete("1");
@@ -119,7 +119,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void deleteCourse_incorrectlyIntroducedId_is4xx() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(courseService).delete(-1);
@@ -137,7 +137,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void alterCourse_isOk() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto("1", "courseName", LocalDate.parse("2025-01-01"),
@@ -160,7 +160,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void alterCourse_newEndDateBeforeStartDate_is4xx() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto("1", null, null,
@@ -180,7 +180,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addStudent_isOk() throws Exception {
         //setup
         doNothing().when(courseService).addStudent(1, 1);
@@ -199,7 +199,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void addStudent_alreadyAttending_is4xx() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(courseService).addStudent(1, 1);
@@ -218,7 +218,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void removeStudent_isOk() throws Exception {
         //setup
         doNothing().when(courseService).removeStudent(1, 1);
@@ -237,7 +237,7 @@ public class CourseControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin")
+    @WithMockUser(username = "admin", password = "admin", roles={"USER", "ADMIN"})
     void removeStudent_incorrectIds_is4xx() throws Exception {
         //setup
         doThrow(IllegalArgumentException.class).when(courseService).removeStudent(1, 1);
