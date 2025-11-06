@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +44,9 @@ public class SecurityController {
 
     @Autowired
     private SecurityContextRepository securityContextRepository;
+
+    @Autowired
+    private RememberMeServices rememberMeServices;
 
     @GetMapping("/register")
     public String register() {
@@ -85,6 +89,8 @@ public class SecurityController {
                 UsernamePasswordAuthenticationToken.unauthenticated(username, password);
 
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+        rememberMeServices.loginSuccess(request, response, authentication);
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);

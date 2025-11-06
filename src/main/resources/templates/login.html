@@ -17,6 +17,10 @@
         <input type="password" id="password" name="password">
         <br>
 
+        <input type="checkbox" id="remember-me" name="remember-me">
+        <label for="remember-me">Remember Me</label>
+        <br>
+
         <div th:if="${param.error}">
             <p>Invalid username or password</p>
         </div>
