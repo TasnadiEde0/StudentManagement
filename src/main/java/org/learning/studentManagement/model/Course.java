@@ -1,5 +1,6 @@
 package org.learning.studentManagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -34,6 +35,7 @@ public class Course extends BaseObject {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "courses")
 //    @OnDelete(action = OnDeleteAction.SET_NULL)
     private List<Student> students;
