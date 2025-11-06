@@ -1,5 +1,6 @@
 package org.learning.studentManagement;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import org.glassfish.jaxb.core.v2.TODO;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +9,9 @@ import org.learning.studentManagement.model.Course;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.learning.studentManagement.model.dto.CourseDto;
+import org.learning.studentManagement.model.dto.Mapper;
 import org.learning.studentManagement.model.dto.StudentDto;
+import org.learning.studentManagement.model.dto.StudentListingDto;
 import org.learning.studentManagement.service.CourseService;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
@@ -41,6 +44,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StudentControllerTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    ObjectMapper  objectMapper;
+    @Autowired
+    Mapper mapper;
 
     @MockitoBean
     private StudentService studentService;
@@ -102,13 +110,68 @@ public class StudentControllerTests {
         when(groupService.findById(0)).thenReturn(group);
         when(studentService.findAllFiltered(group, "firstName", 1)).thenReturn(new ArrayList<>(List.of(createMockStudent())));
 
-
+        //execution
         mockMvc.perform(get("/student?sortBy=firstName&pageNum=1&selectedGroup=0"))
                 .andExpect(status().isOk()).andExpect(view().name("student"));
         verify(studentService, times(1)).count();
         when(studentService.findAllFiltered(group, "firstName", 1)).thenReturn(new ArrayList<>(List.of(createMockStudent())));
 
         //cleanup
+    }
+
+    @Test
+    @WithMockUser(username = "user", password = "user")
+    void fetchedStudent_withGroup_isOk() throws Exception {
+        //setup
+        Student student = createMockStudent();
+        Group group = student.getGroup();
+        StudentListingDto studentListingDto =
+                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1);
+
+        when(groupService.findById(group.getId())).thenReturn(group);
+        when(studentService.findAllFiltered(group, "firstName", 1)).thenReturn(List.of(student));
+        when(studentService.count()).thenReturn(1);
+        when(studentService.countByGroup(group)).thenReturn(1);
+
+        //execution
+        mockMvc.perform(get("/fetchedStudent?sortBy=firstName&pageNum=1&selectedGroup=" + group.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(studentListingDto)));
+
+        verify(studentService, times(1)).count();
+        verify(studentService, times(1)).findAllFiltered(group, "firstName", 1);
+        verify(studentService, times(1)).countByGroup(group);
+        verify(studentService, times(1)).count();
+        verify(groupService, times(1)).findById(1);
+
+        //cleanup
+
+    }
+
+    @Test
+    void fetchedStudent_withoutGroup_isOk() throws Exception {
+        //setup
+        Student student = createMockStudent();
+        Group group = student.getGroup();
+        StudentListingDto studentListingDto =
+                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1);
+
+        when(studentService.findAllFiltered(null, "firstName", 1)).thenReturn(List.of(student));
+        when(studentService.count()).thenReturn(1);
+
+        //execution
+        mockMvc.perform(get("/fetchedStudent?sortBy=firstName&pageNum=1&selectedGroup="))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(studentListingDto)));
+
+        verify(studentService, times(1)).count();
+        verify(studentService, times(1)).findAllFiltered(null, "firstName", 1);
+        verify(studentService, never()).countByGroup(group);
+        verify(studentService, times(1)).count();
+        verify(groupService, never()).findById(1);
+
+        //cleanup
+
     }
 
     @Test
