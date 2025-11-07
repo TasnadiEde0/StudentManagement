@@ -67,7 +67,7 @@ async function refresh_students() {
     while(groupSelector.lastElementChild) {
         groupSelector.removeChild(groupSelector.lastElementChild)
     }
-    const option = document.createElement("option");
+    let option = document.createElement("option");
     option.text = "All";
     option.value = "";
     groupSelector.appendChild(option);
@@ -80,6 +80,21 @@ async function refresh_students() {
             option.selected = "selected";
         }
         groupSelector.appendChild(option);
+    }
+
+    const groupAlterSelector = document.getElementById("groupIdAlter");
+    while(groupAlterSelector.lastElementChild) {
+        groupAlterSelector.removeChild(groupAlterSelector.lastElementChild)
+    }
+    option = document.createElement("option");
+    option.text = "";
+    option.value = "";
+    groupAlterSelector.appendChild(option);
+    for(const group of groups) {
+        const option = document.createElement("option");
+        option.text = group.name;
+        option.value = group.id;
+        groupAlterSelector.appendChild(option);
     }
 
 }
@@ -186,7 +201,7 @@ window.onload = () => {
             await refresh_students();
         });
     }
-    
+
     refresh_students();
 
 

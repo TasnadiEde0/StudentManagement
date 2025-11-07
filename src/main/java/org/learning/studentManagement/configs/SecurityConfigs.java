@@ -38,6 +38,7 @@ public class SecurityConfigs {
             JdbcUserDetailsManager jdbcUserDetailsManager
     ) throws Exception {
         return http
+//                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                                 auth
                                         .requestMatchers("/login").permitAll()

@@ -50,9 +50,9 @@ public class StudentApiController {
             selectedGroup = groupService.findById(Integer.parseInt(selectedGroupId));
             int studentCountByGroup = studentService.countByGroup(selectedGroup);
             pageCount = (int) Math.ceil(studentCountByGroup / 10.0);
-            if (Integer.parseInt(pageNum) > pageCount) {
-                pageNum = String.valueOf(Math.max(1, pageCount));
-            }
+        }
+        if (Integer.parseInt(pageNum) > pageCount) {
+            pageNum = String.valueOf(Math.max(1, pageCount));
         }
 
         List<Student> students = studentService.findAllFiltered(selectedGroup, sortBy, Integer.parseInt(pageNum));
