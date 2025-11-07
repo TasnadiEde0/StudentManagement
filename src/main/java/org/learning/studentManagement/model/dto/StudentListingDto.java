@@ -13,4 +13,5 @@ import java.util.List;
 public class StudentListingDto {
     List<StudentDto> students;
     int pageCount;
+    List<GroupDto> groups;
 }

@@ -4,6 +4,8 @@
     <title>Students</title>
     <link rel="stylesheet" href="/styles.css">
     <script src="/student.js"></script>
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
@@ -53,25 +55,25 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        <tr th:each="student : ${students}">
-            <td th:text="${student.id}"></td>
-            <td><img th:src="@{/imgs/__${student.imgName}__}" height="50"></td>
-            <td th:text="${student.firstName}"></td>
-            <td th:text="${student.lastName}"></td>
-            <td th:text="${student.email}"></td>
-            <td th:text="${student.cnp}"></td>
-            <td th:text="${student.group}!=null?${student.group.name}:''"></td>
-            <td><a th:href="@{/student/__${student.id}__}">Own Page</a></td>
-        </tr>
-    </tbody>
+<!--    <tbody>-->
+<!--        <tr th:each="student : ${students}">-->
+<!--            <td th:text="${student.id}"></td>-->
+<!--            <td><img th:src="@{/imgs/__${student.imgName}__}" height="50"></td>-->
+<!--            <td th:text="${student.firstName}"></td>-->
+<!--            <td th:text="${student.lastName}"></td>-->
+<!--            <td th:text="${student.email}"></td>-->
+<!--            <td th:text="${student.cnp}"></td>-->
+<!--            <td th:text="${student.group}!=null?${student.group.name}:''"></td>-->
+<!--            <td><a th:href="@{/student/__${student.id}__}">Own Page</a></td>-->
+<!--        </tr>-->
+<!--    </tbody>-->
 </table>
 
 <div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
 
     <h2>Add Student</h2>
 
-    <form th:action="@{/student/add}" method="post" enctype="multipart/form-data">
+    <form id="studentAddForm" th:action="@{/student/add}" method="post" enctype="multipart/form-data">
 
         <label for="profilePic">Profile Picture</label>
         <input type="file" id="profilePic" name="profilePic"  required>
@@ -103,7 +105,7 @@
 
     <h2>Delete Student</h2>
 
-    <form th:action="@{/student/delete}" method="post">
+    <form id="studentDeleteForm" th:action="@{/student/delete}" method="post">
 
         <label for="id">ID </label>
         <input type="text" name="id" id="id" required>
@@ -114,7 +116,7 @@
 
     <h2>Alter Student</h2>
 
-    <form th:action="@{/student/alter}" method="post" enctype="multipart/form-data">
+    <form id="studentAlterForm" th:action="@{/student/alter}" method="post" enctype="multipart/form-data">
 
         <label for="profilePicAlter">Profile Picture</label>
         <input type="file" id="profilePicAlter" name="profilePic">

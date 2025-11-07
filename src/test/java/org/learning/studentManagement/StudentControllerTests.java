@@ -126,7 +126,7 @@ public class StudentControllerTests {
         Student student = createMockStudent();
         Group group = student.getGroup();
         StudentListingDto studentListingDto =
-                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1);
+                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1, List.of());
 
         when(groupService.findById(group.getId())).thenReturn(group);
         when(studentService.findAllFiltered(group, "firstName", 1)).thenReturn(List.of(student));
@@ -134,7 +134,7 @@ public class StudentControllerTests {
         when(studentService.countByGroup(group)).thenReturn(1);
 
         //execution
-        mockMvc.perform(get("/fetchedStudent?sortBy=firstName&pageNum=1&selectedGroup=" + group.getId()))
+        mockMvc.perform(get("/api/student?sortBy=firstName&pageNum=1&selectedGroup=" + group.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(studentListingDto)));
 
@@ -154,13 +154,13 @@ public class StudentControllerTests {
         Student student = createMockStudent();
         Group group = student.getGroup();
         StudentListingDto studentListingDto =
-                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1);
+                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1, List.of());
 
         when(studentService.findAllFiltered(null, "firstName", 1)).thenReturn(List.of(student));
         when(studentService.count()).thenReturn(1);
 
         //execution
-        mockMvc.perform(get("/fetchedStudent?sortBy=firstName&pageNum=1&selectedGroup="))
+        mockMvc.perform(get("/api/student?sortBy=firstName&pageNum=1&selectedGroup="))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(studentListingDto)));
 

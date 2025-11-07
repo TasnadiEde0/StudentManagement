@@ -75,33 +75,6 @@ public class StudentPageController {
 
     }
 
-    @GetMapping("/fetchedStudent")
-    @ResponseBody
-    public StudentListingDto fetchedStudent(
-            @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
-            @RequestParam(value = "selectedGroup", required = false, defaultValue = "") String selectedGroupId
-    ) {
-        int studentCount = studentService.count();
-        int pageCount = (int) Math.ceil(studentCount / 10.0);
-
-        Group selectedGroup = null;
-        if(!selectedGroupId.isEmpty()) {
-            selectedGroup = groupService.findById(Integer.parseInt(selectedGroupId));
-            int studentCountByGroup = studentService.countByGroup(selectedGroup);
-            pageCount = (int) Math.ceil(studentCountByGroup / 10.0);
-            if (Integer.parseInt(pageNum) > pageCount) {
-                pageNum = String.valueOf(Math.max(1, pageCount));
-            }
-        }
-
-        List<Student> students = studentService.findAllFiltered(selectedGroup, sortBy, Integer.parseInt(pageNum));
-        List<StudentDto> studentDtos =
-                students.stream().map(student -> mapper.studentToStudentDto(student)).toList();
-
-        return new StudentListingDto(studentDtos, pageCount);
-    }
-
     @GetMapping("/student/{id}")
     public String student(@PathVariable Integer id, Model model, HttpServletRequest request) {
         Student student = studentService.findById(id);
