@@ -10,14 +10,14 @@
 
     <form th:action="@{/login}" method="post">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" autocomplete="on" autofocus>
+        <input type="text" id="username" name="username" autocomplete="on" autofocus required>
         <br>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <br>
 
-        <input type="checkbox" id="remember-me" name="remember-me" required>
+        <input type="checkbox" id="remember-me" name="remember-me">
         <label for="remember-me">Remember Me</label>
         <br>
 

@@ -149,7 +149,6 @@ public class StudentPageController {
     }
 
     //Dynamically serve the student profile pictures
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/imgs/{imgName}")
     public ResponseEntity<Resource> imgServing(@PathVariable String imgName) throws MalformedURLException, FileNotFoundException {
         Resource resource = studentService.serveImg(imgName);
