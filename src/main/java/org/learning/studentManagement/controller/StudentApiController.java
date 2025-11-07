@@ -61,7 +61,7 @@ public class StudentApiController {
         List<GroupDto> groupDtos = groupService.findAll()
                 .stream().map(group -> mapper.grouptoGroupDto(group)).toList();
 
-        return new StudentListingDto(studentDtos, pageCount, groupDtos);
+        return new StudentListingDto(studentDtos, groupDtos, pageCount, studentCount);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

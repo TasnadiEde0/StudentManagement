@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class StudentListingDto {
     List<StudentDto> students;
-    int pageCount;
     List<GroupDto> groups;
+    int pageCount;
+    int studentCount;
 }

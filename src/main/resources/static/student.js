@@ -9,6 +9,10 @@ async function refresh_students() {
     const studentList = await studentData.students;
     const pageCount = studentData.pageCount;
     const groups = studentData.groups;
+    const studentCount = studentData.studentCount;
+
+    const studentCountParagraph = document.getElementById("studentCountParagraph");
+    studentCountParagraph.innerHTML = studentCount + " students are available.";
 
     const table = document.getElementById('studentTable');
     const tableBody = table.getElementsByTagName('tbody');

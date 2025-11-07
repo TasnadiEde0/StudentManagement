@@ -126,7 +126,7 @@ public class StudentControllerTests {
         Student student = createMockStudent();
         Group group = student.getGroup();
         StudentListingDto studentListingDto =
-                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1, List.of());
+                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), List.of(), 1, 1);
 
         when(groupService.findById(group.getId())).thenReturn(group);
         when(studentService.findAllFiltered(group, "firstName", 1)).thenReturn(List.of(student));
@@ -154,7 +154,7 @@ public class StudentControllerTests {
         Student student = createMockStudent();
         Group group = student.getGroup();
         StudentListingDto studentListingDto =
-                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), 1, List.of());
+                new StudentListingDto(List.of(mapper.studentToStudentDto(student)), List.of(), 1, 1);
 
         when(studentService.findAllFiltered(null, "firstName", 1)).thenReturn(List.of(student));
         when(studentService.count()).thenReturn(1);
