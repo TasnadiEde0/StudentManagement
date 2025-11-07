@@ -210,7 +210,7 @@ public class StudentControllerTests {
         MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
                 "multipart/form-data", "upload/imgs/red.png".getBytes());
         StudentDto studentDto = new StudentDto(null, "firstName", "lastName", "1234512345123",
-                "email@email.email", null, "groupName", null, file);
+                "email@email.email", null, "groupName", null, file, null);
         when(studentService.save(studentDto)).thenReturn(new Student());
 
         //execution
@@ -294,7 +294,7 @@ public class StudentControllerTests {
         MockMultipartFile file = new MockMultipartFile("profilePic", "red.png",
                 "multipart/form-data", "upload/imgs/red.png".getBytes());
         StudentDto studentDto = new StudentDto("1", "firstName", "lastName",
-                "1234512345123", "email@email.email", null, null, "groupId", file);
+                "1234512345123", "email@email.email", null, null, "groupId", file, null);
         doNothing().when(studentService).update(studentDto);
 
         //execution
@@ -320,7 +320,7 @@ public class StudentControllerTests {
     void alterStudent_duplicateCnp_is4xxx() throws Exception {
         //setup
         StudentDto studentDto = new StudentDto("1", null, null,
-                "1234512345123", null, null, null, null, null);
+                "1234512345123", null, null, null, null, null, null);
 
         doThrow(IllegalArgumentException.class).when(studentService).update(studentDto);
 

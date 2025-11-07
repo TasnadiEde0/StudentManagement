@@ -108,7 +108,7 @@ public class CourseServiceTests {
 
         //execute
         Course course = courseService.save(new CourseDto(null, "courseName",
-                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01")));
+                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01"), new ArrayList<>()));
         assertEquals("courseName", course.getName());
         assertEquals(LocalDate.parse("2025-01-01"), course.getStartDate());
         assertEquals(LocalDate.parse("2025-02-01"), course.getEndDate());
@@ -125,7 +125,7 @@ public class CourseServiceTests {
 
         //execute
         Exception exception = assertThrows(IllegalArgumentException.class, () -> courseService.save(
-                new CourseDto(null, "courseName", LocalDate.parse("2025-02-01"), LocalDate.parse("2025-01-01"))));
+                new CourseDto(null, "courseName", LocalDate.parse("2025-02-01"), LocalDate.parse("2025-01-01"), new ArrayList<>())));
         assertEquals("The given start date is after the given end date!", exception.getMessage());
         verify(courseDao, times(1)).findByName("courseName");
         verify(courseDao, never()).save(any(Course.class));
@@ -142,7 +142,7 @@ public class CourseServiceTests {
 
         //execute
         courseService.update(new CourseDto("1", "courseName",
-                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01")));
+                LocalDate.parse("2025-01-01"), LocalDate.parse("2025-02-01"), new ArrayList<>()));
         assertEquals("courseName", course.getName());
         assertEquals(LocalDate.parse("2025-01-01"), course.getStartDate());
         assertEquals(LocalDate.parse("2025-02-01"), course.getEndDate());
@@ -160,7 +160,7 @@ public class CourseServiceTests {
 
         //execute
         Exception exception = assertThrows(IllegalArgumentException.class, () -> courseService.update(new CourseDto("1",
-                "courseName", null, LocalDate.parse("2024-02-01"))));
+                "courseName", null, LocalDate.parse("2024-02-01"), new ArrayList<>())));
         assertEquals("The given start date is after the given end date!", exception.getMessage());
         verify(courseDao, times(1)).findById(1);
         verify(courseDao, never()).update(any(Course.class));

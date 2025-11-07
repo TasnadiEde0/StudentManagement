@@ -62,7 +62,7 @@ public class CourseControllerTests {
     void addCourse_isOk() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto(null, "courseName", LocalDate.parse("2025-01-01"),
-                LocalDate.parse("2025-12-31"));
+                LocalDate.parse("2025-12-31"), null);
         when(courseService.save(courseDto)).thenReturn(new Course());
 
         //execution
@@ -84,7 +84,7 @@ public class CourseControllerTests {
     void addCourse_endDateAfterStartDate_is4xx() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto(null, "courseName",
-                LocalDate.parse("2025-12-31"), LocalDate.parse("2025-01-01"));
+                LocalDate.parse("2025-12-31"), LocalDate.parse("2025-01-01"), null);
         doThrow(IllegalArgumentException.class).when(courseService).save(courseDto);
 
         //execution
@@ -141,7 +141,7 @@ public class CourseControllerTests {
     void alterCourse_isOk() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto("1", "courseName", LocalDate.parse("2025-01-01"),
-                LocalDate.parse("2025-12-31"));
+                LocalDate.parse("2025-12-31"), null);
         doNothing().when(courseService).update(courseDto);
 
         //execution
@@ -164,7 +164,7 @@ public class CourseControllerTests {
     void alterCourse_newEndDateBeforeStartDate_is4xx() throws Exception {
         //setup
         CourseDto courseDto = new CourseDto("1", null, null,
-                LocalDate.parse("2024-12-31"));
+                LocalDate.parse("2024-12-31"), null);
         doThrow(IllegalArgumentException.class).when(courseService).update(courseDto);
 
         //execution

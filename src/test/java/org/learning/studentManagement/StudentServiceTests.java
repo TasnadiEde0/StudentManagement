@@ -179,7 +179,7 @@ public class StudentServiceTests {
 
         //execute
         Student savedStudent = studentService.save(new StudentDto(null, "firstName", "lastName",
-                "1234567890123", "email@email.email", null, "groupName", null, mockFile));
+                "1234567890123", "email@email.email", null, "groupName", null, mockFile, new ArrayList<>()));
 
         assertEquals(0, savedStudent.getId());
         assertEquals("firstName", savedStudent.getFirstName());
@@ -205,7 +205,7 @@ public class StudentServiceTests {
         //execute
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
                 studentService.save(new StudentDto(null, "firstName", "lastName", "1234567890123",
-                        "email@email.email", null, "groupName", null, mockFile)));
+                        "email@email.email", null, "groupName", null, mockFile, new ArrayList<>())));
         assertEquals("No picture has been uploaded!", exception.getMessage());
         verify(studentDao, never()).save(any(Student.class));
         verify(studentDao, never()).update(any(Student.class));
@@ -235,7 +235,7 @@ public class StudentServiceTests {
 
         //execute
         studentService.update(new StudentDto("1", "firstName", "lastName",
-                "1234567890123", "email@email.email", null, null, "1", mockFile));
+                "1234567890123", "email@email.email", null, null, "1", mockFile, new ArrayList<>()));
 
         assertEquals(1, student.getId());
         assertEquals("firstName", student.getFirstName());
@@ -268,7 +268,7 @@ public class StudentServiceTests {
         //execute
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
                 studentService.update(new StudentDto("1", "firstName", "lastName",
-                        "1234567890123", "email@email.email", null, "1", null, mockFile)));
+                        "1234567890123", "email@email.email", null, "1", null, mockFile, new ArrayList<>())));
         assertEquals("Student Email already taken!", exception.getMessage());
         verify(studentDao, times(1)).findById(1);
         verify(studentDao, never()).findByCnp(any());
