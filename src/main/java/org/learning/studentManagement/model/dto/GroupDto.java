@@ -14,5 +14,5 @@ public class GroupDto {
 
     private String name;
 
-//    private List<String> studentIds;
+    private List<String> studentIds;
 }

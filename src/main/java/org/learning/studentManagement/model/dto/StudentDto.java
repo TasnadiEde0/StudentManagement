@@ -11,6 +11,8 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +35,6 @@ public class StudentDto {
 
     private MultipartFile profilePic;
 
-//    private List<String> courseIds;
+    private List<String> courseIds;
 
 }

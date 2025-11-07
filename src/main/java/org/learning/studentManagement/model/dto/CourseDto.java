@@ -30,7 +30,7 @@ public class CourseDto {
 
     private LocalDate endDate;
 
-//    private List<String> studentIds;
+    private List<String> studentIds;
 
 
 }

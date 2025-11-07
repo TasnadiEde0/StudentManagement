@@ -14,14 +14,18 @@ public class Mapper {
         GroupDto dto = new GroupDto();
         dto.setId(String.valueOf(group.getId()));
         dto.setName(group.getName());
+        if (group.getStudents() != null) {
+            dto.setStudentIds(group.getStudents().stream()
+                    .map(student -> String.valueOf(student.getId())).toList());
+        }
 
         return dto;
     }
 
-    public Group groupDtoToGroup(GroupDto groupDto) {
+    public Group dtoToGroup(GroupDto dto) {
         Group group = new Group();
-        group.setId(Integer.parseInt(groupDto.getId()));
-        group.setName(groupDto.getName());
+        group.setId(Integer.parseInt(dto.getId()));
+        group.setName(dto.getName());
         group.setStudents(new ArrayList<>());
 
         return group;
@@ -33,17 +37,29 @@ public class Mapper {
         dto.setName(course.getName());
         dto.setStartDate(course.getStartDate());
         dto.setEndDate(course.getEndDate());
+        if(course.getStudents() != null) {
+            dto.setStudentIds(course.getStudents().stream()
+                    .map(student -> String.valueOf(student.getId())).toList());
+        }
 
         return dto;
 
     }
 
-    public Course courseDtoToCourse(CourseDto courseDto) {
+    public Course dtoToCourse(CourseDto dto) {
         Course course = new Course();
-        course.setId(Integer.parseInt(courseDto.getId()));
-        course.setName(courseDto.getName());
-        course.setStartDate(courseDto.getStartDate());
-        course.setEndDate(courseDto.getEndDate());
+        if (dto.getId() != null) {
+            course.setId(Integer.parseInt(dto.getId()));
+        }
+        if (dto.getName() != null) {
+            course.setName(dto.getName());
+        }
+        if (dto.getStartDate() != null) {
+            course.setStartDate(dto.getStartDate());
+        }
+        if (dto.getEndDate() != null) {
+            course.setEndDate(dto.getEndDate());
+        }
         course.setStudents(new ArrayList<>());
 
         return course;
@@ -59,18 +75,34 @@ public class Mapper {
         dto.setImgName(student.getImgName());
         dto.setGroupName(student.getGroup().getName());
         dto.setGroupId(String.valueOf(student.getGroup().getId()));
+        if(student.getCourses() != null) {
+            dto.setCourseIds(student.getCourses().stream()
+                    .map(course -> String.valueOf(course.getId())).toList());
+        }
 
         return dto;
     }
 
-    public Student studentDtoToStudent(StudentDto studentDto) {
+    public Student dtoToStudent(StudentDto dto) {
         Student student = new Student();
-        student.setId(Integer.parseInt(studentDto.getId()));
-        student.setFirstName(studentDto.getFirstName());
-        student.setLastName(studentDto.getLastName());
-        student.setEmail(studentDto.getEmail());
-        student.setCnp(studentDto.getCnp());
-        student.setImgName(studentDto.getImgName());
+        if(dto.getId() != null) {
+            student.setId(Integer.parseInt(dto.getId()));
+        }
+        if(dto.getFirstName()  != null) {
+            student.setFirstName(dto.getFirstName());
+        }
+        if(dto.getLastName()  != null) {
+            student.setLastName(dto.getLastName());
+        }
+        if(dto.getEmail() != null) {
+            student.setEmail(dto.getEmail());
+        }
+        if(dto.getCnp() != null) {
+            student.setCnp(dto.getCnp());
+        }
+        if(dto.getImgName() != null) {
+            student.setImgName(dto.getImgName());
+        }
 
         return student;
     }
