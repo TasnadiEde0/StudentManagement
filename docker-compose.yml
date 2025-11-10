@@ -9,3 +9,8 @@ services:
       - ./src/main/db/init.sql:/docker-entrypoint-initdb.d/create_database.sql
     ports:
       - '5432:5432'
+
+  springserver:
+    build: .
+    ports:
+      - '8080:8080'
