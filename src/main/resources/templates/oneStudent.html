@@ -5,76 +5,68 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
-<p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
 
-<a HREF="/student">Student</a>
-<br>
+    <form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
+    <p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
 
-<img th:src="@{/imgs/__${student.imgName}__}" height="300">
+    <a HREF="/student">Student</a>
+    <br>
 
-<p th:utext="@{First Name: <b>__${student.firstName}__</b>}" ></p>
+    <img th:src="@{/imgs/__${student.imgName}__}" height="300">
 
-<p th:utext="@{Last Name: <b>__${student.lastName}__</b>}" ></p>
+    <p th:utext="@{ID: <b>__${student.id}__</b>}" ></p>
 
-<p th:utext="@{CNP: <b>__${student.cnp}__</b>}" ></p>
+    <p th:utext="@{First Name: <b>__${student.firstName}__</b>}" ></p>
 
-<p th:utext="@{Email: <b>__${student.email}__</b>}" ></p>
+    <p th:utext="@{Last Name: <b>__${student.lastName}__</b>}" ></p>
 
-<p th:utext="@{Group: <b>__${student.group.name}__</b>}" ></p>
+    <p th:utext="@{CNP: <b>__${student.cnp}__</b>}" ></p>
 
-<p>Enrolled Courses: </p>
+    <p th:utext="@{Email: <b>__${student.email}__</b>}" ></p>
 
-<table>
-    <tr>
-        <th>Course ID</th>
-        <th>Course Name</th>
-        <th>Starting Date</th>
-        <th>Ending Date</th>
-        <div th:if="${admin}">
-            <th></th>
-        </div>
-    </tr>
+    <p th:utext="@{Group: <b>__${student.group.name}__</b>}" ></p>
 
-    <tr th:each="course : ${student.courses}">
-        <td th:text="${course.id}"></td>
-        <td th:text="${course.name}"></td>
-        <td th:text="${course.startDate}"></td>
-        <td th:text="${course.endDate}"></td>
-        <div th:if="${admin}">
-            <td>
-                <form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
-                    <input type="submit" value="Leave">
-                </form>
-            </td>
-        </div>
-    </tr>
+    <p>Enrolled Courses: </p>
 
-</table>
+    <table>
+        <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+            <th>Starting Date</th>
+            <th>Ending Date</th>
+            <div th:if="${admin}">
+                <th></th>
+            </div>
+        </tr>
 
-<div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
-    <h2>Enter Course</h2>
+        <tr th:each="course : ${student.courses}">
+            <td th:text="${course.id}"></td>
+            <td th:text="${course.name}"></td>
+            <td th:text="${course.startDate}"></td>
+            <td th:text="${course.endDate}"></td>
+            <div th:if="${admin}">
+                <td>
+                    <form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
+                        <input type="submit" value="Leave">
+                    </form>
+                </td>
+            </div>
+        </tr>
 
-    <form th:action="@{/student/enterCourse?studentId=__${student.id}__}" method="post">
+    </table>
 
-        <label for="courseId">Course ID</label>
-        <input type="text" name="courseId" id="courseId" required>
-        <br>
+    <div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
+        <h2>Enter Course</h2>
 
-        <input type="submit" value="Enter">
-    </form>
-</div>
+        <form th:action="@{/student/enterCourse?studentId=__${student.id}__}" method="post">
 
-<!--<h2>Leave Course</h2>-->
+            <label for="courseId">Course ID</label>
+            <input type="text" name="courseId" id="courseId" required>
+            <br>
 
-<!--<form th:action="@{/utils/student/leaveCourse?studentId=__${student.id}__}" method="post">-->
-
-<!--    <label for="courseId">Course ID</label>-->
-<!--    <input type="text" name="courseId" id="courseIdRm">-->
-<!--    <br>-->
-
-<!--    <input type="submit" value="Leave">-->
-<!--</form>-->
+            <input type="submit" value="Enter">
+        </form>
+    </div>
 
 </body>
 </html>

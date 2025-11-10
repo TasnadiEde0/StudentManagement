@@ -17,3 +17,11 @@ body {
 h1, h2 {
     padding-top: 15px;
 }
+
+.main {
+    display: flex; 
+}
+
+.column {
+    flex: 50%;
+}

@@ -5,135 +5,147 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
-<p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
+
+<div class="main">
+    <div class="column">
+
+        <form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
+
+        <p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
 
 
-<a HREF="/student">Students</a>
-<br>
-<a HREF="/group">Groups</a>
-
-<h1>Courses</h1>
-
-<div th:each="course : ${courses}">
-
-    <h2 th:text="${course.name}"></h2>
-    <p th:text="@{Course ID: __${course.id}__}"></p>
-    <p th:text="@{Starting Date: __${course.startDate}__}"></p>
-    <p th:text="@{Ending Date: __${course.endDate}__}"></p>
-
-    <details>
-        <summary>List of attending students</summary>
-        <table>
-            <tr>
-                <th>Student ID</th>
-                <th>Student First Name</th>
-                <th>Student Last Name</th>
-                <th></th>
-            </tr>
-            <tr th:each="student : ${course.students}">
-                <td th:text="${student.id}"></td>
-                <td th:text="${student.firstName}"></td>
-                <td th:text="${student.lastName}"></td>
-                <td>
-                    <form th:action="@{/course/removeStudent?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
-                        <input type="submit" value="Remove">
-                    </form>
-                </td>
-            </tr>
-        </table>
-    </details>
-
-</div>
-
-<div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
-
-    <h2>Add Course</h2>
-
-    <form th:action="@{/course/add}" method="post">
-
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" required>
+        <a HREF="/student">Students</a>
         <br>
+        <a HREF="/group">Groups</a>
 
-        <label for="startDate">Staring Date</label>
-        <input type="date" name="startDate" id="startDate" required>
-        <br>
+        <h1>Courses</h1>
 
-        <label for="endDate">Ending Date</label>
-        <input type="date" name="endDate" id="endDate" required>
-        <br>
+        <div th:each="course : ${courses}">
 
-        <input type="submit" value="Add Course">
+            <h2 th:text="${course.name}"></h2>
+            <p th:text="@{Course ID: __${course.id}__}"></p>
+            <p th:text="@{Starting Date: __${course.startDate}__}"></p>
+            <p th:text="@{Ending Date: __${course.endDate}__}"></p>
 
-    </form>
+            <details>
+                <summary>List of attending students</summary>
+                <table>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student First Name</th>
+                        <th>Student Last Name</th>
+                        <th></th>
+                    </tr>
+                    <tr th:each="student : ${course.students}">
+                        <td th:text="${student.id}"></td>
+                        <td th:text="${student.firstName}"></td>
+                        <td th:text="${student.lastName}"></td>
+                        <td>
+                            <form th:action="@{/course/removeStudent?studentId=__${student.id}__&courseId=__${course.id}__}" method="post">
+                                <input type="submit" value="Remove">
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </details>
 
-    <h2>Delete Course</h2>
+        </div>
 
-    <form th:action="@{/course/delete}" method="post">
+    </div>
 
-        <label for="id">ID</label>
-        <input type="text" name="id" id="id" required>
-        <br>
+    <div class="column">
 
-        <input type="submit" value="Delete Course">
+        <div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
 
-    </form>
+            <h2>Add Course</h2>
 
-    <h2>Alter Course</h2>
+            <form th:action="@{/course/add}" method="post">
 
-    <form th:action="@{/course/alter}" method="post">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" required>
+                <br>
 
-        <label for="id">ID</label>
-        <input type="text" name="id" id="idAlter" required>
-        <br>
+                <label for="startDate">Staring Date</label>
+                <input type="date" name="startDate" id="startDate" required>
+                <br>
 
-        <label for="name">Name</label>
-        <input type="text" name="name" id="nameAlter">
-        <br>
+                <label for="endDate">Ending Date</label>
+                <input type="date" name="endDate" id="endDate" required>
+                <br>
 
-        <label for="startDate">Staring Date</label>
-        <input type="date" name="startDate" id="startDateAlter">
-        <br>
+                <input type="submit" value="Add Course">
 
-        <label for="endDate">Ending Date</label>
-        <input type="date" name="endDate" id="endDateAlter">
-        <br>
+            </form>
 
-        <input type="submit" value="Alter Course">
+            <h2>Delete Course</h2>
 
-    </form>
+            <form th:action="@{/course/delete}" method="post">
 
-    <h2>Add Student to Course</h2>
+                <label for="id">ID</label>
+                <input type="text" name="id" id="id" required>
+                <br>
 
-    <form th:action="@{/course/addStudent}" method="post">
+                <input type="submit" value="Delete Course">
 
-        <label for="studentId">Student ID</label>
-        <input type="text" name="studentId" id="studentId">
-        <br>
+            </form>
 
-        <label for="courseId">Course ID</label>
-        <input type="text" name="courseId" id="courseId">
-        <br>
+            <h2>Alter Course</h2>
 
-        <input type="submit" value="Add">
-    </form>
+            <form th:action="@{/course/alter}" method="post">
 
-    <h2>Remove Student from Course</h2>
+                <label for="id">ID</label>
+                <input type="text" name="id" id="idAlter" required>
+                <br>
 
-    <form th:action="@{/course/removeStudent}" method="post">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="nameAlter">
+                <br>
 
-        <label for="studentId">Student ID</label>
-        <input type="text" name="studentId" id="studentIdRm">
-        <br>
+                <label for="startDate">Staring Date</label>
+                <input type="date" name="startDate" id="startDateAlter">
+                <br>
 
-        <label for="courseId">Course ID</label>
-        <input type="text" name="courseId" id="courseIdRm">
-        <br>
+                <label for="endDate">Ending Date</label>
+                <input type="date" name="endDate" id="endDateAlter">
+                <br>
 
-        <input type="submit" value="Remove">
-    </form>
+                <input type="submit" value="Alter Course">
 
+            </form>
+
+            <h2>Add Student to Course</h2>
+
+            <form th:action="@{/course/addStudent}" method="post">
+
+                <label for="studentId">Student ID</label>
+                <input type="text" name="studentId" id="studentId">
+                <br>
+
+                <label for="courseId">Course ID</label>
+                <input type="text" name="courseId" id="courseId">
+                <br>
+
+                <input type="submit" value="Add">
+            </form>
+
+            <h2>Remove Student from Course</h2>
+
+            <form th:action="@{/course/removeStudent}" method="post">
+
+                <label for="studentId">Student ID</label>
+                <input type="text" name="studentId" id="studentIdRm">
+                <br>
+
+                <label for="courseId">Course ID</label>
+                <input type="text" name="courseId" id="courseIdRm">
+                <br>
+
+                <input type="submit" value="Remove">
+            </form>
+
+        </div>
+
+    </div>
 </div>
 
 </body>

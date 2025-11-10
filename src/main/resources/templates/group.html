@@ -5,78 +5,90 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
-<p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
+
+<div class="main">
+    <div class="column">
+
+        <form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
+
+        <p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
 
 
-<a HREF="/student">Students</a>
-<br>
-<a HREF="/course">Courses</a>
-
-<h1>Groups</h1>
-
-<div th:each="group : ${groups}">
-    <h2 th:text="${group.name}"></h2>
-    <p th:text="@{Group Id: __${group.id}__}"></p>
-    <details>
-        <summary>List of members</summary>
-        <table>
-            <tr>
-                <th>Student ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-            </tr>
-            <tr th:each="student : ${group.students}">
-                <td th:text="${student.id}"></td>
-                <td th:text="${student.firstName}"></td>
-                <td th:text="${student.lastName}"></td>
-            </tr>
-        </table>
-    </details>
-</div>
-
-<div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
-
-    <h2>Add Group</h2>
-
-    <form th:action="@{/group/add}" method="post">
-
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" required>
+        <a HREF="/student">Students</a>
         <br>
+        <a HREF="/course">Courses</a>
 
-        <input type="submit" value="Add Group">
+        <h1>Groups</h1>
 
-    </form>
+        <div th:each="group : ${groups}">
+            <h2 th:text="${group.name}"></h2>
+            <p th:text="@{Group Id: __${group.id}__}"></p>
+            <details>
+                <summary>List of members</summary>
+                <table>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+                    <tr th:each="student : ${group.students}">
+                        <td th:text="${student.id}"></td>
+                        <td th:text="${student.firstName}"></td>
+                        <td th:text="${student.lastName}"></td>
+                    </tr>
+                </table>
+            </details>
+        </div>
 
-    <h2>Delete Group</h2>
+    </div>
 
-    <form th:action="@{/group/delete}" method="post">
+    <div class="column">
 
-        <label for="id">ID</label>
-        <input type="text" name="id" id="id" required>
-        <br>
+        <div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
 
-        <input type="submit" value="Delete Group">
+            <h2>Add Group</h2>
 
-    </form>
+            <form th:action="@{/group/add}" method="post">
 
-    <h2>Alter Group</h2>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" required>
+                <br>
 
-    <form th:action="@{/group/alter}" method="post">
+                <input type="submit" value="Add Group">
 
-        <label for="id">ID</label>
-        <input type="text" name="id" id="idAlter" required>
-        <br>
+            </form>
 
-        <label for="name">Name</label>
-        <input type="text" name="name" id="nameAlter">
-        <br>
+            <h2>Delete Group</h2>
 
-        <input type="submit" value="Alter Group">
+            <form th:action="@{/group/delete}" method="post">
 
-    </form>
+                <label for="id">ID</label>
+                <input type="text" name="id" id="id" required>
+                <br>
 
+                <input type="submit" value="Delete Group">
+
+            </form>
+
+            <h2>Alter Group</h2>
+
+            <form th:action="@{/group/alter}" method="post">
+
+                <label for="id">ID</label>
+                <input type="text" name="id" id="idAlter" required>
+                <br>
+
+                <label for="name">Name</label>
+                <input type="text" name="name" id="nameAlter">
+                <br>
+
+                <input type="submit" value="Alter Group">
+
+            </form>
+
+        </div>
+
+    </div>
 </div>
 
 </body>

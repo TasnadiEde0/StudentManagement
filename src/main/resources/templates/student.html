@@ -8,152 +8,151 @@
 	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
-<form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
-<p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
 
-<a HREF="/group">Groups</a>
-<br>
-<a HREF="/course">Courses</a>
+<div class="main">
+    <div class="column">
 
-<h1>Students</h1>
+        <form th:action="@{/logout}" method="post"><input type="submit" value="Logout"></form>
 
-<p id="studentCountParagraph"></p>
+        <p th:utext="@{Logged in as <b>__${loggedInUsername}__</b>}"></p>
 
-<form id="filterSorter">
-    <label for="sortBy">Sort by</label>
-    <select id="sortBy" name="sortBy">
-        <option value="id" th:selected="(${currentSortBy} == 'id')">ID</option>
-        <option value="firstName" th:selected="(${currentSortBy} == 'firstName')">First Name</option>
-        <option value="lastName" th:selected="(${currentSortBy} == 'lastName')">Last Name</option>
-        <option value="email" th:selected="(${currentSortBy} == 'email')">Email</option>
-    </select>
-
-    <label for="pageNum">Page</label>
-    <select id="pageNum" name="pageNum">
-        <option th:each="i : ${#numbers.sequence(1, pageCount)}" th:value="${i}" th:text="${i}" th:selected="(${i} == *{currentPageNum})"></option>
-    </select>
-
-    <label for="selectedGroup">Group</label>
-    <select id="selectedGroup" name="selectedGroup">
-        <option value="" th:selected="(${currentSelectedGroup} == '')">All</option>
-        <option th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}" th:selected="(${group.id} == *{currentSelectedGroup})"></option>
-    </select>
-
-    <input type="submit" value="Show">
-</form>
-
-<table id="studentTable">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Profile Picture</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>CNP</th>
-            <th>Group</th>
-            <th></th>
-        </tr>
-    </thead>
-<!--    <tbody>-->
-<!--        <tr th:each="student : ${students}">-->
-<!--            <td th:text="${student.id}"></td>-->
-<!--            <td><img th:src="@{/imgs/__${student.imgName}__}" height="50"></td>-->
-<!--            <td th:text="${student.firstName}"></td>-->
-<!--            <td th:text="${student.lastName}"></td>-->
-<!--            <td th:text="${student.email}"></td>-->
-<!--            <td th:text="${student.cnp}"></td>-->
-<!--            <td th:text="${student.group}!=null?${student.group.name}:''"></td>-->
-<!--            <td><a th:href="@{/student/__${student.id}__}">Own Page</a></td>-->
-<!--        </tr>-->
-<!--    </tbody>-->
-</table>
-
-<div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
-
-    <h2>Add Student</h2>
-
-    <form id="studentAddForm" th:action="@{/student/add}" method="post" enctype="multipart/form-data">
-
-        <label for="profilePic">Profile Picture</label>
-        <input type="file" id="profilePic" name="profilePic"  required>
+        <a HREF="/group">Groups</a>
         <br>
+        <a HREF="/course">Courses</a>
 
-        <label for="firstName">First Name</label>
-        <input type="text" name="firstName" id="firstName" required>
-        <br>
+        <h1>Students</h1>
 
-        <label for="lastName">Last Name</label>
-        <input type="text" name="lastName" id="lastName" required>
-        <br>
+        <p id="studentCountParagraph"></p>
 
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" required>
-        <br>
+        <form id="filterSorter">
+            <label for="sortBy">Sort by</label>
+            <select id="sortBy" name="sortBy">
+                <option value="id" th:selected="(${currentSortBy} == 'id')">ID</option>
+                <option value="firstName" th:selected="(${currentSortBy} == 'firstName')">First Name</option>
+                <option value="lastName" th:selected="(${currentSortBy} == 'lastName')">Last Name</option>
+                <option value="email" th:selected="(${currentSortBy} == 'email')">Email</option>
+            </select>
 
-        <label for="cnp">CNP</label>
-        <input type="text" name="cnp" id="cnp" required>
-        <br>
+            <label for="pageNum">Page</label>
+            <select id="pageNum" name="pageNum">
+                <option th:each="i : ${#numbers.sequence(1, pageCount)}" th:value="${i}" th:text="${i}" th:selected="(${i} == *{currentPageNum})"></option>
+            </select>
 
-        <label for="groupName">Group</label>
-        <input type="text" name="groupName" id="groupName" required>
-        <br>
+            <label for="selectedGroup">Group</label>
+            <select id="selectedGroup" name="selectedGroup">
+                <option value="" th:selected="(${currentSelectedGroup} == '')">All</option>
+                <option th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}" th:selected="(${group.id} == *{currentSelectedGroup})"></option>
+            </select>
 
-        <input type="submit" value="Add Student">
+            <input type="submit" value="Show">
+        </form>
 
-    </form>
+        <table id="studentTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Profile Picture</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>CNP</th>
+                    <th>Group</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
 
-    <h2>Delete Student</h2>
+    </div>
 
-    <form id="studentDeleteForm" th:action="@{/student/delete}" method="post">
+    <div class="column">
 
-        <label for="id">ID </label>
-        <input type="text" name="id" id="id" required>
-        <br>
+        <div th:if="${#lists.contains(auths, 'ROLE_ADMIN')}">
 
-        <input type="submit" value="Delete Student">
-    </form>
+            <h2>Add Student</h2>
 
-    <h2>Alter Student</h2>
+            <form id="studentAddForm" th:action="@{/student/add}" method="post" enctype="multipart/form-data">
 
-    <form id="studentAlterForm" th:action="@{/student/alter}" method="post" enctype="multipart/form-data">
+                <label for="profilePic">Profile Picture</label>
+                <input type="file" id="profilePic" name="profilePic"  required>
+                <br>
 
-        <label for="profilePicAlter">Profile Picture</label>
-        <input type="file" id="profilePicAlter" name="profilePic">
-        <br>
+                <label for="firstName">First Name</label>
+                <input type="text" name="firstName" id="firstName" required>
+                <br>
 
-        <label for="id">ID </label>
-        <input type="text" name="id" id="idAlter" required>
-        <br>
+                <label for="lastName">Last Name</label>
+                <input type="text" name="lastName" id="lastName" required>
+                <br>
 
-        <label for="firstName">First Name</label>
-        <input type="text" name="firstName" id="firstNameAlter">
-        <br>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" required>
+                <br>
 
-        <label for="lastName">Last Name</label>
-        <input type="text" name="lastName" id="lastNameAlter">
-        <br>
+                <label for="cnp">CNP</label>
+                <input type="text" name="cnp" id="cnp" required>
+                <br>
 
-        <label for="email">Email</label>
-        <input type="email" name="email" id="emailAlter">
-        <br>
+                <label for="groupName">Group</label>
+                <input type="text" name="groupName" id="groupName" required>
+                <br>
 
-        <label for="cnp">CNP</label>
-        <input type="text" name="cnp" id="cnpAlter">
-        <br>
+                <input type="submit" value="Add Student">
 
-        <label for="groupIdAlter">Group</label>
-        <select name="groupId" id="groupIdAlter">
-            <option></option>
-            <option th:each="group : ${groups}" th:text="${group.name}" th:value="${group.id}"></option>
-        </select>
-        <br>
+            </form>
 
-        <input type="submit" value="Alter Student">
+            <h2>Delete Student</h2>
 
-    </form>
+            <form id="studentDeleteForm" th:action="@{/student/delete}" method="post">
 
+                <label for="id">ID </label>
+                <input type="text" name="id" id="id" required>
+                <br>
+
+                <input type="submit" value="Delete Student">
+            </form>
+
+            <h2>Alter Student</h2>
+
+            <form id="studentAlterForm" th:action="@{/student/alter}" method="post" enctype="multipart/form-data">
+
+                <label for="profilePicAlter">Profile Picture</label>
+                <input type="file" id="profilePicAlter" name="profilePic">
+                <br>
+
+                <label for="id">ID </label>
+                <input type="text" name="id" id="idAlter" required>
+                <br>
+
+                <label for="firstName">First Name</label>
+                <input type="text" name="firstName" id="firstNameAlter">
+                <br>
+
+                <label for="lastName">Last Name</label>
+                <input type="text" name="lastName" id="lastNameAlter">
+                <br>
+
+                <label for="email">Email</label>
+                <input type="email" name="email" id="emailAlter">
+                <br>
+
+                <label for="cnp">CNP</label>
+                <input type="text" name="cnp" id="cnpAlter">
+                <br>
+
+                <label for="groupIdAlter">Group</label>
+                <select name="groupId" id="groupIdAlter">
+                    <option></option>
+                    <option th:each="group : ${groups}" th:text="${group.name}" th:value="${group.id}"></option>
+                </select>
+                <br>
+
+                <input type="submit" value="Alter Student">
+
+            </form>
+
+        </div>
+
+    </div>
 </div>
-
 </body>
 </html>
