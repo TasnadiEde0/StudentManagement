@@ -73,7 +73,7 @@
             <form id="studentAddForm" th:action="@{/student/add}" method="post" enctype="multipart/form-data">
 
                 <label for="profilePic">Profile Picture</label>
-                <input type="file" id="profilePic" name="profilePic"  required>
+                <input type="file" id="profilePic" name="profilePic" accept="image/*" required>
                 <br>
 
                 <label for="firstName">First Name</label>
@@ -96,7 +96,7 @@
                 <input type="text" name="groupName" id="groupName" required>
                 <br>
 
-                <input type="submit" value="Add Student">
+                <input type="submit" value="Add Student"> <p class="error" id="studentAddFormError"></p>
 
             </form>
 
@@ -108,7 +108,7 @@
                 <input type="text" name="id" id="id" required>
                 <br>
 
-                <input type="submit" value="Delete Student">
+                <input type="submit" value="Delete Student"> <p class="error" id="studentDeleteFormError"></p>
             </form>
 
             <h2>Alter Student</h2>
@@ -146,7 +146,7 @@
                 </select>
                 <br>
 
-                <input type="submit" value="Alter Student">
+                <input type="submit" value="Alter Student"> <p class="error" id="studentAlterFormError"></p>
 
             </form>
 

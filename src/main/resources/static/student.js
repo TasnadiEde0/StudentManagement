@@ -1,10 +1,15 @@
+function removeAllChildren(parent) {
+    while(parent.lastElementChild) {
+        parent.removeChild(parent.lastElementChild);
+    }
+}
+
 async function refresh_students() {
     const sortBy = document.getElementById('sortBy').value;
     const pageNum = document.getElementById('pageNum').value;
     const selectedGroup = document.getElementById('selectedGroup').value;
 
-    const request = await fetch("/api/student?sortBy=" + sortBy + "&pageNum=" + pageNum + "&selectedGroup=" + selectedGroup)
-    
+    const request = await fetch("/api/student?sortBy=" + sortBy + "&pageNum=" + pageNum + "&selectedGroup=" + selectedGroup);
     const studentData = await request.json();
     const studentList = await studentData.students;
     const pageCount = studentData.pageCount;
@@ -46,13 +51,9 @@ async function refresh_students() {
     }
 
     const pageSelector = document.getElementById('pageNum');
-
-    while(pageSelector.lastElementChild) {
-        pageSelector.removeChild(pageSelector.lastElementChild)
-    }
+    removeAllChildren(pageSelector);
 
     let currentPage = pageNum;
-
     if(currentPage > pageCount) {
         currentPage = pageCount;
     }
@@ -67,10 +68,8 @@ async function refresh_students() {
     }
 
     const groupSelector = document.getElementById('selectedGroup');
+    removeAllChildren(groupSelector);
 
-    while(groupSelector.lastElementChild) {
-        groupSelector.removeChild(groupSelector.lastElementChild)
-    }
     let option = document.createElement("option");
     option.text = "All";
     option.value = "";
@@ -87,13 +86,13 @@ async function refresh_students() {
     }
 
     const groupAlterSelector = document.getElementById("groupIdAlter");
-    while(groupAlterSelector.lastElementChild) {
-        groupAlterSelector.removeChild(groupAlterSelector.lastElementChild)
-    }
+    removeAllChildren(groupAlterSelector)
+
     option = document.createElement("option");
     option.text = "";
     option.value = "";
     groupAlterSelector.appendChild(option);
+
     for(const group of groups) {
         const option = document.createElement("option");
         option.text = group.name;
@@ -103,11 +102,41 @@ async function refresh_students() {
 
 }
 
+function addStudentFormCheck(data) {
+    error = document.getElementById('studentAddFormError');
+
+    if(data.get('firstName').match(/^[a-zA-Z 1-9]{1,16}$/) == null) {
+        error.innerHTML = "Invalid first name: " + data.get('firstName');
+        return true;
+    }
+    if(data.get('lastName').match(/^[a-zA-Z 1-9]{1,16}$/) == null) {
+        error.innerHTML = "Invalid last name: " + data.get('lastName');
+        return true;
+    }
+    if(data.get('cnp').match(/^[0-9]{13}$/) == null) {
+        error.innerHTML = "Invalid cnp: " + data.get('cnp');
+        return true;
+    }
+    if(data.get('groupName').match(/^[a-zA-Z 1-9]{4,32}$/) == null) {
+        error.innerHTML = "Invalid group name: " + data.get('groupName');
+        return true;
+    }
+
+    return false;
+}
+
 async function addStudent() {
     const form = document.getElementById('studentAddForm');
     const data = new FormData(form);
 
     const csrf_token = document.querySelector("meta[name='_csrf']").getAttribute("content");
+
+    if(addStudentFormCheck(data)) {
+        return;
+    }
+    else {
+        document.getElementById('studentAddFormError').innerHTML = "";
+    }
 
     await fetch("/api/student", {
         headers: {
@@ -126,9 +155,27 @@ async function addStudent() {
 
 }
 
+function deleteStudentFormCheck(data) {
+    error = document.getElementById('studentDeleteFormError');
+
+    if(data.get('id').match(/[0-9]{1,}/) == null) {
+        error.innerHTML = "Invalid ID: " + data.get('id');
+        return true;
+    }
+
+    return false;
+}
+
 async function deleteStudent() {
     const form = document.getElementById('studentDeleteForm');
     const data = new FormData(form);
+
+    if(deleteStudentFormCheck(data)) {
+        return;
+    }
+    else {
+        document.getElementById('studentDeleteFormError').innerHTML = "";
+    }
 
     const csrf_token = document.querySelector("meta[name='_csrf']").getAttribute("content");
 
@@ -149,9 +196,39 @@ async function deleteStudent() {
 
 }
 
+function updateStudentFormCheck(data) {
+    error = document.getElementById('studentAlterFormError');
+
+    if(data.get('id').match(/[0-9]{1,}/) == null) {
+        error.innerHTML = "Invalid ID: " + data.get('id');
+        return true;
+    }
+    if(data.get('firstName').match(/^[a-zA-Z 1-9]{1,16}$/) == null) {
+        error.innerHTML = "Invalid first name: " + data.get('firstName');
+        return true;
+    }
+    if(data.get('lastName').match(/^[a-zA-Z 1-9]{1,16}$/) == null) {
+        error.innerHTML = "Invalid last name: " + data.get('lastName');
+        return true;
+    }
+    if(data.get('cnp').match(/^[0-9]{13}$/) == null) {
+        error.innerHTML = "Invalid cnp: " + data.get('cnp');
+        return true;
+    }
+
+    return false;
+}
+
 async function updateStudent() {
     const form = document.getElementById('studentAlterForm');
     const data = new FormData(form);
+
+    if(updateStudentFormCheck(data)) {
+        return;
+    }
+    else {
+        document.getElementById('studentAlterFormError').innerHTML = "";
+    }
 
     const csrf_token = document.querySelector("meta[name='_csrf']").getAttribute("content");
 

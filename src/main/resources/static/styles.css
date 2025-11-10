@@ -25,3 +25,7 @@ h1, h2 {
 .column {
     flex: 50%;
 }
+
+.error {
+    color: red;
+}
