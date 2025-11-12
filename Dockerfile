@@ -1,6 +1,6 @@
 FROM maven:latest AS build
 WORKDIR dir
-COPY ./src ./src
+COPY server/src ./src
 COPY ./pom.xml .
 RUN mvn compile
 RUN mvn package -Dmaven.test.skip

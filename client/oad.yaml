@@ -1,0 +1,14 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: "placeholder"
+  description: "placeholder"
+servers:
+  - url: http://localhost:8080
+paths:
+  /placeholder:
+    get:
+      description: placeholder
+      responses:
+        200:
+          description: placeholder
