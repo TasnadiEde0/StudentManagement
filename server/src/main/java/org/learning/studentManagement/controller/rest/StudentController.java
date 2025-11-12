@@ -33,10 +33,15 @@ public class StudentController {
     @GetMapping
     @ResponseBody
     public List<StudentDto> getStudents(
-            @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "") String sortBy,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "") String pageNum,
             @RequestParam(value = "selectedGroup", required = false, defaultValue = "") String selectedGroupId
     ) {
+        if(sortBy.isEmpty() && pageNum.isEmpty() && selectedGroupId.isEmpty()) {
+            return studentService.findAll().stream()
+                    .map(student -> mapper.studentToStudentDto(student)).toList();
+        }
+
         int studentCount = studentService.count();
         int pageCount = (int) Math.ceil(studentCount / 10.0);
 

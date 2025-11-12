@@ -15,13 +15,18 @@ paths:
           in: query
           schema:
             type: string
-            default: id
+            default:
+            enum:
+              - id
+              - firstName
+              - lastName
+              - email
         - name: pageNum
           required: false
           in: query
           schema:
             type: string
-            default: 1
+            default:
         - name: selectedGroup
           required: false
           in: query
