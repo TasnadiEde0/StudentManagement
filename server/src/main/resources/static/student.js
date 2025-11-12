@@ -9,7 +9,7 @@ async function refresh_students() {
     const pageNum = document.getElementById('pageNum').value;
     const selectedGroup = document.getElementById('selectedGroup').value;
 
-    const request = await fetch("/api/student?sortBy=" + sortBy + "&pageNum=" + pageNum + "&selectedGroup=" + selectedGroup);
+    const request = await fetch("/oldApi/student?sortBy=" + sortBy + "&pageNum=" + pageNum + "&selectedGroup=" + selectedGroup);
     const studentData = await request.json();
     const studentList = await studentData.students;
     const pageCount = studentData.pageCount;
@@ -138,7 +138,7 @@ async function addStudent() {
         document.getElementById('studentAddFormError').innerHTML = "";
     }
 
-    await fetch("/api/student", {
+    await fetch("/oldApi/student", {
         headers: {
             "X-CSRF-TOKEN": csrf_token
         },
@@ -179,7 +179,7 @@ async function deleteStudent() {
 
     const csrf_token = document.querySelector("meta[name='_csrf']").getAttribute("content");
 
-    await fetch("/api/student", {
+    await fetch("/oldApi/student", {
         headers: {
             "X-CSRF-TOKEN": csrf_token
         },
@@ -232,7 +232,7 @@ async function updateStudent() {
 
     const csrf_token = document.querySelector("meta[name='_csrf']").getAttribute("content");
 
-    await fetch("/api/student", {
+    await fetch("/oldApi/student", {
         headers: {
             "X-CSRF-TOKEN": csrf_token
         },

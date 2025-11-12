@@ -1,14 +1,130 @@
 openapi: "3.0.0"
 info:
   version: "1.0.0"
-  title: "placeholder"
-  description: "placeholder"
+  title: "Student Management"
+  description: "OpenAPI Description of the Student Management"
 servers:
   - url: http://localhost:8080
+
 paths:
-  /placeholder:
+  /student:
     get:
-      description: placeholder
+      parameters:
+        - name: sortBy
+          required: false
+          in: query
+          schema:
+            type: string
+            default: id
+        - name: pageNum
+          required: false
+          in: query
+          schema:
+            type: string
+            default: 1
+        - name: selectedGroup
+          required: false
+          in: query
+          schema:
+            type: string
+            default:
       responses:
         200:
-          description: placeholder
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/studentObjList'
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentObj'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentObj'
+  /student/{id}:
+    parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: integer
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentObj'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentObj'
+    delete:
+      responses:
+        200:
+          description: OK
+  /student/{studentId}/cousre/{courseId}:
+    parameters:
+      - name: studentId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: courseId
+        required: true
+        in: path
+        schema:
+          type: integer
+    post:
+      responses:
+        200:
+          description: OK
+    delete:
+      responses:
+        200:
+          description: OK
+
+components:
+  schemas:
+    StudentObj:
+      properties:
+        id:
+          nullable: false
+          type: string
+        firstName:
+          nullable: false
+          type: string
+        lastName:
+          nullable: false
+          type: string
+        cnp:
+          nullable: false
+          type: string
+        email:
+          nullable: false
+          type: string
+        imgName:
+          nullable: false
+          type: string
+        groupId:
+          nullable: false
+          type: string
+        courseIds:
+          nullable: false
+          type: array
+          items:
+            type: string
+    studentObjList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StudentObj'

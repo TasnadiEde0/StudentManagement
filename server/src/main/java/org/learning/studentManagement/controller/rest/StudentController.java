@@ -1,6 +1,5 @@
-package org.learning.studentManagement.controller;
+package org.learning.studentManagement.controller.rest;
 
-import lombok.extern.slf4j.Slf4j;
 import org.learning.studentManagement.model.Group;
 import org.learning.studentManagement.model.Student;
 import org.learning.studentManagement.model.dto.GroupDto;
@@ -11,33 +10,29 @@ import org.learning.studentManagement.service.CourseService;
 import org.learning.studentManagement.service.GroupService;
 import org.learning.studentManagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.List;
 
-@Slf4j
 @RestController
-public class StudentApiController {
+@RequestMapping("/api/student")
+public class StudentController {
     @Autowired
-    private StudentService  studentService;
-    
+    private StudentService studentService;
+
     @Autowired
     private GroupService groupService;
-    
+
     @Autowired
     private CourseService courseService;
-    
+
     @Autowired
     private Mapper mapper;
 
-    @GetMapping("/api/student")
+    @GetMapping
     @ResponseBody
-    public StudentListingDto fetchedStudent(
+    public List<StudentDto> getStudents(
             @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
             @RequestParam(value = "selectedGroup", required = false, defaultValue = "") String selectedGroupId
@@ -56,47 +51,53 @@ public class StudentApiController {
         }
 
         List<Student> students = studentService.findAllFiltered(selectedGroup, sortBy, Integer.parseInt(pageNum));
-        List<StudentDto> studentDtos =
-                students.stream().map(student -> mapper.studentToStudentDto(student)).toList();
-        List<GroupDto> groupDtos = groupService.findAll()
-                .stream().map(group -> mapper.grouptoGroupDto(group)).toList();
 
-        return new StudentListingDto(studentDtos, groupDtos, pageCount, studentCount);
+        return students.stream().map(student -> mapper.studentToStudentDto(student)).toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/api/student")
-    public ResponseEntity<String> addStudent(
-            StudentDto studentDto
+    @GetMapping("/{id}")
+    @ResponseBody
+    public StudentDto getStudentById(@PathVariable("id") Integer id) {
+        return mapper.studentToStudentDto(studentService.findById(id));
+    }
+
+    @PostMapping
+    @ResponseBody
+    public StudentDto postStudent(@RequestBody StudentDto studentDto) throws IOException {
+        return mapper.studentToStudentDto(studentService.save(studentDto));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseBody
+    public StudentDto putStudent(
+            @RequestBody StudentDto studentDto,
+            @PathVariable("id") Integer id
     ) throws IOException {
-
-        studentService.save(studentDto);
-
-        return ResponseEntity.ok("Student added!");
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/api/student")
-    public ResponseEntity<String> deleteStudent(
-            @RequestParam(value = "id") String id
-    ) {
-
-        studentService.delete(id);
-
-        return ResponseEntity.ok("Student deleted!");
-
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/api/student")
-    public ResponseEntity<String> alterStudent(
-            StudentDto studentDto
-    ) throws IOException {
-
+        studentDto.setId(String.valueOf(id));
         studentService.update(studentDto);
+        return mapper.studentToStudentDto(studentService.findById(id));
+    }
 
-        return ResponseEntity.ok("Student updated!");
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public void putStudent(@PathVariable("id") Integer id) throws IOException {
+        studentService.delete(String.valueOf(id));
+    }
 
+    @PostMapping("/{studentId}/course/{courseId}")
+    public void enterCourse(
+            @PathVariable("studentId") Integer studentId,
+            @PathVariable("courseId") Integer courseId
+    ) {
+        studentService.enterCourse(studentId, courseId);
+    }
+
+    @DeleteMapping("/{studentId}/course/{courseId}")
+    public void leaveCourse(
+            @PathVariable("studentId") Integer studentId,
+            @PathVariable("courseId") Integer courseId
+    ) {
+        studentService.leaveCourse(studentId, courseId);
     }
 
 }

@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class StudentControllerTests {
+public class StudentFetchControllerTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -134,7 +134,7 @@ public class StudentControllerTests {
         when(studentService.countByGroup(group)).thenReturn(1);
 
         //execution
-        mockMvc.perform(get("/api/student?sortBy=firstName&pageNum=1&selectedGroup=" + group.getId()))
+        mockMvc.perform(get("/oldApi/student?sortBy=firstName&pageNum=1&selectedGroup=" + group.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(studentListingDto)));
 
@@ -160,7 +160,7 @@ public class StudentControllerTests {
         when(studentService.count()).thenReturn(1);
 
         //execution
-        mockMvc.perform(get("/api/student?sortBy=firstName&pageNum=1&selectedGroup="))
+        mockMvc.perform(get("/oldApi/student?sortBy=firstName&pageNum=1&selectedGroup="))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(studentListingDto)));
 
