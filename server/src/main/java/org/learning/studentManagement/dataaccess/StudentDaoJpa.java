@@ -31,20 +31,24 @@ public interface StudentDaoJpa extends StudentDao, JpaRepository<Student, Intege
 
     long countByGroup(Group group);
 
-    List<Student> findTop10ByOrderByFirstNameAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByOrderByLastNameAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByOrderByEmailAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByOrderByIdAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByFirstNameAsc(Group group, OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByLastNameAsc(Group group, OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByEmailAsc(Group group, OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByIdAsc(Group group, OffsetScrollPosition offset);
+    @Modifying
+    @Transactional
+    @Query(value = """
+                SELECT *
+                FROM tb_student s
+                WHERE s.group_id = :groupId OR :groupId IS NULL
+                ORDER BY CASE WHEN :orderProperty = 'id' THEN s.id END,
+                         CASE WHEN :orderProperty = 'firstName' THEN s.first_name END,
+                         CASE WHEN :orderProperty = 'lastName' THEN s.last_name END,
+                         CASE WHEN :orderProperty = 'email' THEN s.email END
+                LIMIT 10
+                OFFSET :#{(#page - 1) * 10}
+            """,
+            nativeQuery = true)
+    List<Student> findAllFiltered(
+            @Param("groupId") Integer groupId,
+            @Param("orderProperty") String orderProperty,
+            @Param("page") Integer page
+    );
 
 }

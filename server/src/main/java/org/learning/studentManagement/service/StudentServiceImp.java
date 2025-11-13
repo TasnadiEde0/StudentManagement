@@ -164,27 +164,9 @@ public class StudentServiceImp implements StudentService {
         return ScrollPosition.offset((page - 1) * 10L - 1);
     }
 
-    public List<Student> findAllFiltered(Group group, String orderProperty, int page) {
-        List<Student> students;
-        if (group == null) {
-            switch (orderProperty) {
-                case "firstName" -> students = studentDao.findTop10ByOrderByFirstNameAsc(scrollPosition(page));
-                case "lastName" -> students = studentDao.findTop10ByOrderByLastNameAsc(scrollPosition(page));
-                case "email" -> students = studentDao.findTop10ByOrderByEmailAsc(scrollPosition(page));
-                default -> students = studentDao.findTop10ByOrderByIdAsc(scrollPosition(page));
-            }
-        }
-        else {
-            switch (orderProperty) {
-                case "firstName" -> students = studentDao.findTop10ByGroupOrderByFirstNameAsc(group, scrollPosition(page));
-                case "lastName" -> students = studentDao.findTop10ByGroupOrderByLastNameAsc(group, scrollPosition(page));
-                case "email" -> students = studentDao.findTop10ByGroupOrderByEmailAsc(group, scrollPosition(page));
-                default -> students = studentDao.findTop10ByGroupOrderByIdAsc(group, scrollPosition(page));
-            }
-        }
+    public List<Student> findAllFiltered(Group group, String orderProperty, Integer page) {
+        return studentDao.findAllFiltered(group != null ? group.getId() : null, orderProperty, page);
 
-
-        return students;
     }
 
     /**

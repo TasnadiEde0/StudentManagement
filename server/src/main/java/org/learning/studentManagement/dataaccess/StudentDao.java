@@ -30,19 +30,5 @@ public interface StudentDao {
 
     long countByGroup(Group group);
 
-    List<Student> findTop10ByOrderByFirstNameAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByOrderByLastNameAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByOrderByEmailAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByOrderByIdAsc(OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByFirstNameAsc(Group group, OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByLastNameAsc(Group group, OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByEmailAsc(Group group, OffsetScrollPosition offset);
-
-    List<Student> findTop10ByGroupOrderByIdAsc(Group group, OffsetScrollPosition offset);
+    List<Student> findAllFiltered(Integer groupId, String orderProperty, Integer page);
 }

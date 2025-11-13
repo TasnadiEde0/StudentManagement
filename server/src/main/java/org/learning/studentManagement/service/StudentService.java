@@ -40,6 +40,6 @@ public interface StudentService {
 
     void leaveCourse(Integer studentId, Integer courseId);
 
-    List<Student> findAllFiltered(Group group, String orderProperty, int page);
+    List<Student> findAllFiltered(Group group, String orderProperty, Integer page);
 
 }
